@@ -1,0 +1,32 @@
+version: "3.0"
+services:
+  node_sub_1:
+    build: .
+    environment:
+      BROKER: research.upb.edu
+      TOPIC: upb/chat
+      PORT: ${PORT}
+  node_sub_2:
+    build: .
+    environment:
+      BROKER: research.upb.edu
+      TOPIC: upb/chat
+      PORT: ${PORT}
+  node_sub_3:
+    build: .
+    environment:
+      BROKER: research.upb.edu
+      TOPIC: upb/chat
+      PORT: ${PORT}
+  node_sub_4:
+    build: .
+    environment:
+      BROKER: research.upb.edu
+      TOPIC: upb/chat
+      PORT: ${PORT}
+  node_sub_5:
+    build: .
+    environment:
+      BROKER: research.upb.edu
+      TOPIC: upb/chat
+      PORT: ${PORT}

@@ -1,0 +1,38 @@
+version: "3.0"
+services:
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+  node_pub_1:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: upb/chat
+      PORT: 1883
+  node_pub_2:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: upb/chat
+      PORT: 1883
+  node_pub_3:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: upb/chat
+      PORT: 1883
+  node_pub_4:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: upb/chat
+      PORT: 1883
+  node_pub_5:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: upb/chat
+      PORT: 1883
