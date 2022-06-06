@@ -15,30 +15,45 @@ function sleep(ms){
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getData(){
+function getIP(){
   var data = fs.readFileSync('/etc/hosts', 'utf8');
   var lines = data.split("\n")
   var lastLine = lines[lines.length - 1] == '' ? lines[lines.length - 2] : lines[lines.length - 1]
   lastLine = lastLine.split("\t")
-  return lastLine 
+  return lastLine[0] 
+}
+function random(type){
+  var num = Math.floor(Math.random() * (3 - 1)) + 1;
+  var respuesta
+  if(num === 1)
+  { 
+    if(type === "control"){
+      respuesta = "ON"
+    }else{
+      respuesta = "TRUE"
+    }
+  }else{
+   
+    if(type === "control"){
+      respuesta = "OFF"
+    }else{
+      respuesta = "FALSE"
+    }
+  }
+  return respuesta
 }
 
-const data = getData()
-var message = {
-  time: new Date(),
-  container: data[1],
-  ip: data[0]
-}
+
+
 
 const iterateMessages = async(limit) => {
-  client.publish(topic, JSON.stringify(message), (error) => {
-    if(error){
-      console.error(error)
-    }
-  })
   for(var i = 0; i < limit; i++){
     await sleep(5000).then(() => {
-      message["time"] = new Date()
+      var message = {
+        control: random("control"),
+        forward: random("forward"),
+        ip: getIP()
+      }
       client.publish(topic, JSON.stringify(message), (error) => {
         if(error){
           console.error(error)
@@ -50,5 +65,5 @@ const iterateMessages = async(limit) => {
 
 client.on('connect', () => {
   console.log("Connected")
-  iterateMessages(5)
+  iterateMessages(50)
 })
