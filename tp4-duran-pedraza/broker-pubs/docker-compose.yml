@@ -12,3 +12,27 @@ services:
       BROKER: mqtt
       TOPIC: control
       PORT: 1883
+  node_pub_2:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: control
+      PORT: 1883
+  node_pub_3:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: control
+      PORT: 1883
+  node_pub_4:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: control
+      PORT: 1883
+  node_pub_5:
+    build: .
+    environment:
+      BROKER: mqtt
+      TOPIC: control
+      PORT: 1883
