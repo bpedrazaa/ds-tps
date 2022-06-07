@@ -65,5 +65,5 @@ const iterateMessages = async(limit) => {
 
 client.on('connect', () => {
   console.log("Connected")
-  iterateMessages(50)
+  iterateMessages(200)
 })
