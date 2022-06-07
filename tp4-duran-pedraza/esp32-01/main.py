@@ -27,11 +27,11 @@ def sub_cb(topic, msg):
   ipString = newMsg[2].split(':')
 
   # Show message in OLED
-  oled.text(newMsg[0] + ',', 0, 0)
-  oled.text(forwardString[0] + ':', 0, 10)
-  oled.text(forwardString[1] + ',', 0, 20)
-  oled.text(ipString[0] + ':', 0, 30)
-  oled.text(ipString[1], 0, 40)
+  oled.text(newMsg[0].replace(" ", "") + ',', 0, 0)
+  oled.text(forwardString[0].replace(" ", "")+ ':', 0, 10)
+  oled.text(forwardString[1].replace(" ", "") + ',', 0, 20)
+  oled.text(ipString[0].replace(" ", "") + ':', 0, 30)
+  oled.text(ipString[1].replace(" ", ""), 0, 40)
   oled.show();
 
   msg = json.loads(msg)
