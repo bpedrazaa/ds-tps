@@ -1,5 +1,6 @@
 import time
 from umqttsimple import MQTTClient
+from variables import varSsid, varPassword, varKeepAliveValue, varPortNumber
 import ubinascii
 import machine
 import micropython
@@ -9,11 +10,11 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-ssid = 'd4n0n4'
-password = 'd4n0n4.cuc0n4.'
+ssid = varSsid
+password = varPassword
 mqtt_server = 'research.upb.edu'
-portNumber = 21192
-keepaliveValue = 60
+portNumber = varPortNumber
+keepaliveValue = varKeepAliveValue
 client_id = ubinascii.hexlify(machine.unique_id())
 topic_sub = b'control'
 topic_pub = b'forward'

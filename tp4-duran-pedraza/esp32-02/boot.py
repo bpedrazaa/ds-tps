@@ -9,11 +9,11 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-ssid = 'CONECTATE SALA'
-password = 'FLIADURAN'
+ssid = varSsid
+password = varPassword
 mqtt_server = 'research.upb.edu'
-portNumber = 21192
-keepaliveValue = 60
+portNumber = varPortNumber
+keepaliveValue = varKeepAliveValue
 client_id = ubinascii.hexlify(machine.unique_id())
 topic_sub = b'forward'
 
