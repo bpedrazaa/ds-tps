@@ -1,5 +1,6 @@
 import time
 from umqttsimple import MQTTClient
+from variables import varSsid, varPassword, varKeepAliveValue, varPortNumber
 import ubinascii
 import machine
 import micropython
