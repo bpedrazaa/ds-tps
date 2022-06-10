@@ -1,7 +1,7 @@
 
 
 const mqtt = require('mqtt')
-const client  = mqtt.connect('mqtt://'+process.env.HOST+':'+process.env.PORT)
+const clientMqtt  = mqtt.connect('mqtt://'+process.env.HOST+':'+process.env.PORT)
  
 var PROTO_PATH = __dirname + '../protos/general.proto';
 
@@ -66,8 +66,8 @@ function getFilesInfo(){
 MQTT
 */ 
 function ConnectEvent() {
-  client.subscribe(process.env.TOPICSUB)
-  // client.publish(process.env.TOPICPUB, jsonFile)
+  clientMqtt.subscribe(process.env.TOPICSUB)
+  // clientMqtt.publish(process.env.TOPICPUB, jsonFile)
   
 }
 
@@ -95,8 +95,8 @@ function main() {
 
 
 main();
-client.on('connect', ConnectEvent)
-client.on('message', MessageEvent)
+clientMqtt.on('connect', ConnectEvent)
+clientMqtt.on('message', MessageEvent)
 
 
 
