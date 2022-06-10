@@ -30,10 +30,10 @@ message registryInfo {
   
    
 service generalService {
-    // 
-    rpc registerToMaster (registryInfo) returns (google.protobuf.Empty) {}
-    //
-    rpc getFileInfo(fileName) returns (fileInfo) {}
-    rpc searchFile (fileName) returns (searchFileInfo) {}
+    // from slave to master
+    rpc RegisterToMaster (registryInfo) returns (google.protobuf.Empty) {}
+    //from master to slave
+    rpc GetFileInfo(fileName) returns (fileInfo) {}
+    rpc SearchFile (fileName) returns (searchFileInfo) {}
 
   }
