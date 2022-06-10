@@ -1,15 +1,30 @@
 import 'package:grpc/grpc.dart';
 // import 'package:helloworld/src/generated/helloworld.pbgrpc.dart';
-import 'package:master-folder/generated/master-folder.pbgrpc.dart';
+import 'lib/src/generated/master-folder.pb.dart';
+import 'package:lib/src/generated/master-folder.pbgrpc.dart';
 
 
-//server.dart
+/*
+PARTE DE SERVIDOR DONDE ESPERA A QUE SE REGISTREN
+ */
 
-class GreeterService extends GreeterServiceBase {
+class generalService extends generalServiceBase {
+  
   @override
-  Future<HelloReply> sayHello(ServiceCall call, HelloRequest request) async {
-    return HelloReply()..message = 'Hello, ${request.name}!';
+  Future<Empty> registerToMaster(ServiceCall call, registerInfo request) async {
+    return Empty;
   }
+
+
+  @override
+  Future<Book> createBook(ServiceCall call, Book request) async {
+    var book = Book();
+    book.title = request.title;
+    book.id = request.id;
+    books.books.add(book);
+    return book;
+  }
+
 }
 
 Future<void> main(List<String> args) async {
@@ -59,3 +74,25 @@ Future<void> main(List<String> args) async {
 // void main() {
 //     print('hello, world');
 // }
+
+
+
+
+
+/**
+* gRPC Server
+**/
+class TodoServer {  
+    Future<void> main(List<String> args) async {  
+        final server = Server([TodoService()]);  // Create a new server from the TodoService
+        await server.serve(port: 9000); // Start the server on port 9000
+        print('Server listening on port ${server.port}...');  
+ }} 
+
+
+ 
+
+main() {  
+  TodoServer todoServer = new TodoServer();  
+  todoServer.main([]);  
+}

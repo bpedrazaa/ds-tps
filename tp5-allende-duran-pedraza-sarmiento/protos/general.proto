@@ -1,27 +1,26 @@
 syntax = "proto3";
 
 
-import "google/protobuf/empty.proto";
 
+message Empty{}
 
-
-message registryInfo {
+message RegistryInfo {
     string ipAddress = 1;
     string name = 2;
   }
   
-  message fileInfo {
+  message FileInfo {
     string fileName = 1;
     string fullPath = 2;
     uint32 size =3 ;
     string nextFile = 4;
   }
 
-  message fileName {
+  message FileName {
     string fileName = 1;
   }
   
-  message searchFileInfo {
+  message SearchFileInfo {
     string fileName = 1;
     uint32 size =2 ;
     string idFile = 3;
@@ -29,11 +28,11 @@ message registryInfo {
    }
   
    
-service generalService {
+service GeneralService {
     // from slave to master
-    rpc RegisterToMaster (registryInfo) returns (google.protobuf.Empty) {}
+    rpc RegisterToMaster (RegistryInfo) returns (Empty) {}
     //from master to slave
-    rpc GetFileInfo(fileName) returns (fileInfo) {}
-    rpc SearchFile (fileName) returns (searchFileInfo) {}
+    rpc GetFileInfo(FileName) returns (FileInfo) {}
+    rpc SearchFile (FileName) returns (SearchFileInfo) {}
 
   }
