@@ -14,7 +14,6 @@ class GeneralService extends GeneralServiceBase {
   
   RegisterInfoList registerInfoList = RegisterInfoList()
 
-
   @override
   Future<Empty> registerToMaster(ServiceCall call, RegisterInfo request) async {
     // arrayRegistry.add(request)
@@ -34,7 +33,6 @@ class GeneralServer {
         print('Server listening on port ${server.port}...');  
     }
 } 
-
 
 
 class Client {
@@ -87,12 +85,10 @@ class Client {
     
 }
 
-
-
-
 main() {  
 
   //servidor
+  print('hello from main')
   GeneralServer generalServer = new GeneralServer();  
   generalServer.main([]);  
 
