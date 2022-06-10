@@ -12,7 +12,7 @@ PARTE DE SERVIDOR DONDE ESPERA A QUE SE REGISTREN
 
 class GeneralService extends GeneralServiceBase {
   
-  RegisterInfoList registerInfoList = RegisterInfoList()
+  RegisterInfoList registerInfoList = RegisterInfoList();
 
   @override
   Future<Empty> registerToMaster(ServiceCall call, RegisterInfo request) async {
@@ -20,7 +20,7 @@ class GeneralService extends GeneralServiceBase {
     var register = RegisterInfo();
     register.ipAddress = request.ipAddress;
     register.name = request.name;
-    registerInfoList.registerInfoList.add(register)
+    registerInfoList.registerInfoList.add(register);
     return Empty();
   }
 
@@ -50,9 +50,9 @@ class Client {
     stub = GeneralClient(channel,
         options: CallOptions(timeout: Duration(seconds: 30)));
     try {
-      var rootPath = "/"
+      var rootPath = "/";
       var fileInfoList = await stub.getFIleInfo(rootPath);
-      print(fileInfoList)
+      print(fileInfoList);
       listFileInfo.add(fileInfoList);
     }catch (e) {
       print(e);
@@ -72,13 +72,13 @@ class Client {
     try {
       
       searchFileInfo = await stub.searchFile(fname);
-      print(searchFileInfo)
+      print(searchFileInfo);
       
     }catch (e) {
       print(e);
     }
     await channel.shutdown();
-    searchFileInfo = null
+    searchFileInfo = null;
 
   }
 
@@ -88,7 +88,7 @@ class Client {
 main() {  
 
   //servidor
-  print('hello from main')
+  print('hello from main');
   GeneralServer generalServer = new GeneralServer();  
   generalServer.main([]);  
 
