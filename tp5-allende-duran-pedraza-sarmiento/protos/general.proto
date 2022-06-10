@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+
+import "google/protobuf/empty.proto";
+
+
+
+message registryInfo {
+    string ipAddress = 1;
+    string name = 2;
+  }
+  
+  message fileInfo {
+    string fileName = 1;
+    string fullPath = 2;
+    uint32 size =3 ;
+    string nextFile = 4;
+  }
+
+  message fileName {
+    string fileName = 1;
+  }
+  
+  message searchFileInfo {
+    string fileName = 1;
+    uint32 size =2 ;
+    string idFile = 3;
+    
+   }
+  
+   
+service generalService {
+    // 
+    rpc registerToMaster (registryInfo) returns (google.protobuf.Empty) {}
+    //
+    rpc getFileInfo(fileName) returns (fileInfo) {}
+    rpc searchFile (fileName) returns (searchFileInfo) {}
+
+  }
