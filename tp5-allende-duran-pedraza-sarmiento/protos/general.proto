@@ -25,7 +25,15 @@ message RegistryInfo {
     uint32 size =2 ;
     string idFile = 3;
     
-   }
+  }
+
+  message RegisterInfoList {
+    repeated RegistryInfo registerInfoList = 1;
+  }
+
+  // message FileInfoList {
+  //   repeated FileInfo fileInfoList = 1;
+  // }
   
    
 service GeneralService {

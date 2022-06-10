@@ -4,95 +4,109 @@ import 'lib/src/generated/master-folder.pb.dart';
 import 'package:lib/src/generated/master-folder.pbgrpc.dart';
 
 
+//para la lista de registro slaves
+import 'dart:convert';
 /*
 PARTE DE SERVIDOR DONDE ESPERA A QUE SE REGISTREN
  */
 
-class generalService extends generalServiceBase {
+class GeneralService extends GeneralServiceBase {
   
-  @override
-  Future<Empty> registerToMaster(ServiceCall call, registerInfo request) async {
-    return Empty;
-  }
+  RegisterInfoList registerInfoList = RegisterInfoList()
 
 
   @override
-  Future<Book> createBook(ServiceCall call, Book request) async {
-    var book = Book();
-    book.title = request.title;
-    book.id = request.id;
-    books.books.add(book);
-    return book;
+  Future<Empty> registerToMaster(ServiceCall call, RegisterInfo request) async {
+    // arrayRegistry.add(request)
+    var register = RegisterInfo();
+    register.ipAddress = request.ipAddress;
+    register.name = request.name;
+    registerInfoList.registerInfoList.add(register)
+    return Empty();
   }
 
 }
 
-Future<void> main(List<String> args) async {
-  final server = Server(
-    [GreeterService()],
-    const <Interceptor>[],
-    CodecRegistry(codecs: const [GzipCodec(), IdentityCodec()]),
-  );
-  await server.serve(port: 50051);
-  print('Server listening on port ${server.port}...');
-}
-
-
-
-/// Dart implementation of the gRPC helloworld.Greeter client.
-
-
-
-Future<void> main(List<String> args) async {
-  final channel = ClientChannel(
-    'localhost',
-    port: 50051,
-    options: ChannelOptions(
-      credentials: ChannelCredentials.insecure(),
-      codecRegistry:
-          CodecRegistry(codecs: const [GzipCodec(), IdentityCodec()]),
-    ),
-  );
-  final stub = GreeterClient(channel);
-
-  final name = args.isNotEmpty ? args[0] : 'world';
-
-  try {
-    final response = await stub.sayHello(
-      HelloRequest()..name = name,
-      options: CallOptions(compression: const GzipCodec()),
-    );
-    print('Greeter client received: ${response.message}');
-  } catch (e) {
-    print('Caught error: $e');
-  }
-  await channel.shutdown();
-}
-
-
-
-// void main() {
-//     print('hello, world');
-// }
-
-
-
-
-
-/**
-* gRPC Server
-**/
-class TodoServer {  
+class GeneralServer {  
     Future<void> main(List<String> args) async {  
-        final server = Server([TodoService()]);  // Create a new server from the TodoService
+        final server = Server([GeneralService()]);  // Create a new server from the TodoService
         await server.serve(port: 9000); // Start the server on port 9000
         print('Server listening on port ${server.port}...');  
- }} 
+    }
+} 
+
+
+
+class Client {
+  ClientChannel channel;
+  GeneralClient stub;
+
+  var listFileInfo = new List();
+  var searchFileInfo = SearchFileInfo();
+  
+  Future<void> getFileInfoAll() async{
+    channel = ClientChannel('localhost',
+            port: 50051,
+            options: // No credentials in this example
+                const ChannelOptions(credentials: ChannelCredentials.insecure()));
+    stub = GeneralClient(channel,
+        options: CallOptions(timeout: Duration(seconds: 30)));
+    try {
+      var rootPath = "/"
+      var fileInfoList = await stub.getFIleInfo(rootPath);
+      print(fileInfoList)
+      listFileInfo.add(fileInfoList);
+    }catch (e) {
+      print(e);
+    }
+    await channel.shutdown();
+
+  }
+
+
+  Future<void> searchFileAll(Filename fname) async{
+    channel = ClientChannel('localhost',
+            port: 50051,
+            options: // No credentials in this example
+                const ChannelOptions(credentials: ChannelCredentials.insecure()));
+    stub = GeneralClient(channel,
+        options: CallOptions(timeout: Duration(seconds: 30)));
+    try {
+      
+      searchFileInfo = await stub.searchFile(fname);
+      print(searchFileInfo)
+      
+    }catch (e) {
+      print(e);
+    }
+    await channel.shutdown();
+    searchFileInfo = null
+
+  }
+
+    
+}
+
+
+
+
+main() {  
+
+  //servidor
+  GeneralServer generalServer = new GeneralServer();  
+  generalServer.main([]);  
+
+  //cliente
+  var client = Client();
+  
+}
+
+
+
+
+
+
 
 
  
 
-main() {  
-  TodoServer todoServer = new TodoServer();  
-  todoServer.main([]);  
-}
