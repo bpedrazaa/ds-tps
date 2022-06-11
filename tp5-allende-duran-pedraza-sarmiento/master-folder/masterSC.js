@@ -76,9 +76,9 @@ function MessageEvent(mytopic, message) {
   if (message.toString() == "dir"){
     this.getFilesInfo();
   } 
-  else {
+  else if(message.toString() == "search") {
     //es find
-    this.searchFileFromMaster()
+    this.searchFileFromMaster("xfile")
   }
 }
 
