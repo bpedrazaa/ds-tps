@@ -3,7 +3,7 @@
 const mqtt = require('mqtt')
 const clientMqtt  = mqtt.connect('mqtt://'+process.env.HOST+':'+process.env.PORT)
  
-var PROTO_PATH = __dirname + '../protos/general.proto';
+var PROTO_PATH = __dirname + '/protos/general.proto';
 
 var grpc = require('@grpc/grpc-js');
 var protoLoader = require('@grpc/proto-loader');
@@ -37,7 +37,7 @@ function searchFileFromMaster(fileToSearch) {
 
     registroSlaves.forEach(element => {
         const client = new generalInfoPackage.GeneralService(element.ipAddress+':50051', grpc.credentials.createInsecure());
-        client.searchFile({ 'fileName': fileToSearch , 'book': 'Cracking the Interview' }, (err, response) => {
+        client.searchFile({ 'fileName': fileToSearch }, (err, response) => {
           if (err) {
               console.log(err);
           } else {
