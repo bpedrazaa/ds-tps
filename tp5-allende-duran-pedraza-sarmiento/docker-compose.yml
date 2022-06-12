@@ -1,0 +1,46 @@
+version: "3.0"
+services:
+  broker:
+    image: eclipse-mosquitto 
+    ports:
+      - 1883:1883
+    volumes:
+      - ./broker/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+  master:
+    image: 127.0.0.1:5000/unique-master
+    environment:
+      - TOPICPUB=upb/file/result
+      - TOPICSUB=upb/file/search
+      - HOST=research.upb.edu
+      - PORT=21212
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+    depends_on:
+      - broker
+  # subscriber:
+  #   image: 127.0.0.1:5000/image-subscriber
+  #   environment:
+  #     - port=21212
+  #     - topic=libros/comedia
+  #     - brokerip=research.upb.edu
+  #   deploy:
+  #     replicas: 5
+  #     restart_policy:
+  #       condition: on-failure
+  #     placement:
+  #       constraints: [node.role == worker]
+  #   depends_on:
+  #     - broker
+
+    
+        
