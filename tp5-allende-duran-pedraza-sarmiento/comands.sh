@@ -12,5 +12,8 @@ docker image tag unique-master:1.0.0 127.0.0.1:5000/unique-master
 docker push 127.0.0.1:5000/unique-master
 # docker push 127.0.0.1:5000/image-publisher
 
+docker rmi 127.0.0.1:5000/unique-master
 
-# docker stack deploy -c docker-compose.yml ds-swarm
+docker rmi $(docker images -qa)
+
+docker stack deploy -c docker-compose.yml ds-swarm
