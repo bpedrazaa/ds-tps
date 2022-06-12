@@ -18,10 +18,11 @@ var packageDefinition = protoLoader.loadSync(
 var generalInfoPackage = grpc.loadPackageDefinition(packageDefinition).generalInfoPackage;
 
 
-
 var parseArgs = require('minimist');
 
 var registroSlaves = []
+
+var armadoResultado = []
 
 /*SERVICE THAT OFFERS MASTER*/ 
 function registerToMaster(call, callback) {
@@ -31,10 +32,9 @@ function registerToMaster(call, callback) {
     callback(null);
 }
 
-/*SERVICE THAT OFFERS SLAVES
+/*SERVICE THAT OFFER SLAVES
  */
 function searchFileFromMaster(fileToSearch) {
-
     registroSlaves.forEach(element => {
         const client = new generalInfoPackage.GeneralService(element.ipAddress+':50051', grpc.credentials.createInsecure());
         client.searchFile({ 'fileName': fileToSearch }, (err, response) => {
@@ -42,25 +42,23 @@ function searchFileFromMaster(fileToSearch) {
               console.log(err);
           } else {
               console.log(`From server-slaves`, JSON.stringify(response));
+              armadoResultado.push(response)
           }
       });
     });
-
-    
 }
-function getFilesInfo(){
+function getFilesInfo(fileName){
   registroSlaves.forEach(element => {
     const client = new generalInfoPackage.GeneralService(element.ipAddress+':50051', grpc.credentials.createInsecure());
-      client.getFileInfo({ 'fileName': "bok.txt", 'book': 'Cracking the Interview' }, (err, response) => {
+      client.getFileInfo({ 'fileName': fileName}, (err, response) => {
         if (err) {
           console.log(err);
         } else {
           console.log(`From server-slaves`, JSON.stringify(response));
+          armadoResultado.push(response)
         }
-
       });
   });
-    
 }
 /*
 MQTT
@@ -68,17 +66,24 @@ MQTT
 function ConnectEvent() {
   clientMqtt.subscribe(process.env.TOPICSUB)
   // clientMqtt.publish(process.env.TOPICPUB, jsonFile)
-  
 }
 
 function MessageEvent(mytopic, message) {
+  armadoResultado =[]
   console.log(mytopic + " - " + message.toString())
   if (message.toString() == "dir"){
+    
     this.getFilesInfo();
+
   } 
-  else if(message.toString() == "search") {
+  else{
+    var text = message.toString();
+    const myMessages = text.split(" ");
+    var order = myMessages[0];
+    var toFind =  myMessages[1];
+    console.log("Order:", order, " To Find:", toFind)
     //es find
-    this.searchFileFromMaster("xfile")
+    this.searchFileFromMaster(toFind)
   }
 }
 
