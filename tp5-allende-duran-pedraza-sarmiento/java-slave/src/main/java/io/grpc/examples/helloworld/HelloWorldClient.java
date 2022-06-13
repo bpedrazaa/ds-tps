@@ -78,7 +78,11 @@ public class HelloWorldClient {
   public static void main(String[] args) throws Exception {
     String user = "Tefy-Slave-Java";
     // Access a service running on the local machine on port 50051
-    String target = "0.0.0.0:50500";
+    logger.log("Variable de entorno broker: {0}", System.getenv("SERVER"));
+    //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
+    logger.log("Conexion hecha a: {0}", System.getenv("SERVER"));
+    //String target = "0.0.0.0:50051";
+    String target = System.getenv("SERVER") + ":50051";
     // Allow passing in the user and target strings as command line arguments
     if (args.length > 0) {
       if ("--help".equals(args[0])) {
