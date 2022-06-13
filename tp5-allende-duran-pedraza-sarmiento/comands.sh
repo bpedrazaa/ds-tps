@@ -7,7 +7,7 @@ docker build ./master-folder -t unique-master:1.0.0
 docker build ./java-slave -t java-image:1.0.0
 
 docker image tag unique-master:1.0.0 127.0.0.1:5000/unique-master
-docker image tag java-image:1.0.0:1.0.0 127.0.0.1:5000/java-image
+docker image tag java-image:1.0.0 127.0.0.1:5000/java-image
 
 docker push 127.0.0.1:5000/unique-master
 docker push 127.0.0.1:5000/java-image
