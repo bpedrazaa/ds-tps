@@ -27,20 +27,17 @@ services:
         constraints: [node.role == manager]
     depends_on:
       - broker
-  # subscriber:
-  #   image: 127.0.0.1:5000/image-subscriber
-  #   environment:
-  #     - port=21212
-  #     - topic=libros/comedia
-  #     - brokerip=research.upb.edu
-  #   deploy:
-  #     replicas: 5
-  #     restart_policy:
-  #       condition: on-failure
-  #     placement:
-  #       constraints: [node.role == worker]
-  #   depends_on:
-  #     - broker
+  javasl:
+    image: 127.0.0.1:5000/java-image
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    depends_on:
+      - broker
+      - master
 
     
         
