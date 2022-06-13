@@ -48,8 +48,8 @@ public class HelloWorldClient {
     //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
    // HelloReply response;
     RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
-    logger.info("RegistryInfo: ")
-    logger.info(mensaje)
+    logger.info("RegistryInfo: ");
+    logger.info(mensaje);
     /*try {
       response = blockingStub.sayHello(request);
     } catch (StatusRuntimeException e) {
