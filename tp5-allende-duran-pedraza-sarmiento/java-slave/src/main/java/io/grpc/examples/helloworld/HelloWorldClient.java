@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
-  private final GreeterGrpc.GreeterBlockingStub blockingStub;
+  private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
@@ -38,7 +38,7 @@ public class HelloWorldClient {
     // shut it down.
 
     // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
-    blockingStub = GreeterGrpc.newBlockingStub(channel);
+    blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
   /** Say hello to server. */
@@ -48,6 +48,8 @@ public class HelloWorldClient {
     //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
    // HelloReply response;
     RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
+    logger.info("RegistryInfo: ")
+    logger.info(mensaje)
     /*try {
       response = blockingStub.sayHello(request);
     } catch (StatusRuntimeException e) {
