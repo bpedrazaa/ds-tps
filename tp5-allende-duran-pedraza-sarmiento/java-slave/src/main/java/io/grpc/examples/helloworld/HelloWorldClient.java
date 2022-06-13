@@ -44,10 +44,11 @@ public class HelloWorldClient {
   /** Say hello to server. */
   public void greet(String name) {
     logger.info("Will try to greet ========== " + name + " .......");
-    HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-    HelloReply response;
+    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+   // HelloReply response;
     RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
-    try {
+    /*try {
       response = blockingStub.sayHello(request);
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
@@ -61,6 +62,7 @@ public class HelloWorldClient {
       return;
     }
     logger.info("Greeting: " + response.getMessage());
+    */
     try {
       blockingStub.registerToMaster(mensaje);
       //blockingStub.registerToMaster(request);
