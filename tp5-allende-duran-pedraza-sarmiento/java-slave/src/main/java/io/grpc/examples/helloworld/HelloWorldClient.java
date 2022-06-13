@@ -16,6 +16,8 @@
 
 package io.grpc.examples.helloworld;
 
+//import generalInfoPackage.GeneralServiceGrpc;
+
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -23,7 +25,7 @@ import io.grpc.StatusRuntimeException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.tp.greeting.GeneralServiceGrpc;
+//import io.grpc.examples.helloworld.GeneralServiceGrpc;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
@@ -32,6 +34,7 @@ public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
+  //private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
@@ -40,17 +43,19 @@ public class HelloWorldClient {
 
     // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
+    //blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
+    //nuevo = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
   /** Say hello to server. */
   public void greet(String name) {
     logger.info("Will try to greet ========== " + name + " .......");
-    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
     //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
    // HelloReply response;
     RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
     logger.info("RegistryInfo: ");
-    logger.info(mensaje);
+    //logger.info(mensaje);
     /*try {
       response = blockingStub.sayHello(request);
     } catch (StatusRuntimeException e) {
@@ -83,11 +88,11 @@ public class HelloWorldClient {
   public static void main(String[] args) throws Exception {
     String user = "Tefy-Slave-Java";
     // Access a service running on the local machine on port 50051
-    logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
+    //logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
     //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
-    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    //String target = "0.0.0.0:50051";
-    String target = System.getenv("SERVER") + ":50051";
+    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    String target = "localhost:50051";
+    //String target = System.getenv("SERVER") + ":50051";
     // Allow passing in the user and target strings as command line arguments
     if (args.length > 0) {
       if ("--help".equals(args[0])) {

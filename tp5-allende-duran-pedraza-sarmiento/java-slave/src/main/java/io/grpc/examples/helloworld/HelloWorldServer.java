@@ -35,7 +35,7 @@ public class HelloWorldServer {
     /* The port on which the server should run */
     int port = 50051;
     server = ServerBuilder.forPort(port)
-        .addService(new GreeterImpl())
+        .addService(new GeneralServiceImpl())
         .build()
         .start();
     logger.info("Server started, listening on " + port);
@@ -78,7 +78,7 @@ public class HelloWorldServer {
     server.blockUntilShutdown();
   }
 
-  static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
+  static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
 
     @Override
     public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
