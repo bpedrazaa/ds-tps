@@ -2,7 +2,11 @@
 
 const mqtt = require('mqtt')
 const clientMqtt  = mqtt.connect('mqtt://'+process.env.HOST+':'+process.env.PORT)
- 
+const os = require('os');
+const add = require('address'); 
+// container: os.hostname(),
+// ip: add.ip()
+
 var PROTO_PATH = __dirname + '/protos/general.proto';
 
 var grpc = require('@grpc/grpc-js');
@@ -94,7 +98,7 @@ function main() {
   var server = new grpc.Server();
   server.addService(generalInfoPackage.GeneralService.service, {registerToMaster: registerToMaster});
   
-  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+  server.bindAsync(add.ip()+':50051', grpc.ServerCredentials.createInsecure(), () => {
     console.log("Escuchando el puerto 50051")
     server.start();
   });
