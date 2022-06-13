@@ -91,7 +91,7 @@ function main() {
   var server = new grpc.Server();
   server.addService(generalInfoPackage.GeneralService.service, {registerToMaster: registerToMaster});
   
-  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+  server.bindAsync('0.0.0.0:50500', grpc.ServerCredentials.createInsecure(), () => {
     server.start();
   });
 
