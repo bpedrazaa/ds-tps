@@ -38,7 +38,7 @@ function registerToMaster(call, callback) {
  */
 function searchFileFromMaster(fileToSearch) {
     registroSlaves.forEach(element => {
-        const client = new generalInfoPackage.GeneralService(element.ipAddress+':50051', grpc.credentials.createInsecure());
+        const client = new generalInfoPackage.GeneralService(element.ipAddress+':50052', grpc.credentials.createInsecure());
         client.searchFile({ 'fileName': fileToSearch }, (err, response) => {
           if (err) {
               console.log(err);
@@ -51,7 +51,7 @@ function searchFileFromMaster(fileToSearch) {
 }
 function getFilesInfo(fileName){
   registroSlaves.forEach(element => {
-    const client = new generalInfoPackage.GeneralService(element.ipAddress+':50051', grpc.credentials.createInsecure());
+    const client = new generalInfoPackage.GeneralService(element.ipAddress+':50052', grpc.credentials.createInsecure());
       client.getFileInfo({ 'fileName': fileName}, (err, response) => {
         if (err) {
           console.log(err);
@@ -85,7 +85,7 @@ function MessageEvent(mytopic, message) {
     var toFind =  myMessages[1];
     console.log("Order:", order, " To Find:", toFind)
     //es find
-    
+
     searchFileFromMaster(toFind);
   }
 }
@@ -94,10 +94,9 @@ function main() {
   var server = new grpc.Server();
   server.addService(generalInfoPackage.GeneralService.service, {registerToMaster: registerToMaster});
   
-  server.bindAsync('0.0.0.0:50500', grpc.ServerCredentials.createInsecure(), () => {
+  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
     server.start();
   });
-
 
 }
 
