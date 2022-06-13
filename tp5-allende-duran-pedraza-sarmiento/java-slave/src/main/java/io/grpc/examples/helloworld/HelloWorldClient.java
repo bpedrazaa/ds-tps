@@ -34,7 +34,6 @@ public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
-  //private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
@@ -43,8 +42,6 @@ public class HelloWorldClient {
 
     // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
-    //blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
-    //nuevo = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
   /** Say hello to server. */
