@@ -388,3 +388,34 @@ iwyu_files.txt
 iwyu_files0.txt
 iwyu/
 iwyu_build/
+
+# Gradle
+gradle.properties
+.gradle
+local.properties
+
+# Maven (examples)
+target
+
+# IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+.ijwb
+
+# Eclipse
+.classpath
+
+# OS X
+.DS_Store
+
+# Emacs
+*~
+\#*\#
+
+# ARM tests
+qemu-arm-static
+
+# Temporary output dir for artifacts
+mvn-artifacts
