@@ -23,6 +23,7 @@ import io.grpc.StatusRuntimeException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import helloworld.GeneralServiceGrpc;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
@@ -30,7 +31,7 @@ import java.util.logging.Logger;
 public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
-  private final GeneralServiceGrpc.newBlockingStub blockingStub;
+  private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
@@ -111,6 +112,7 @@ public class HelloWorldClient {
         .usePlaintext()
         .build();
     try {
+      logger.info("El channel es..."+channel);
       HelloWorldClient client = new HelloWorldClient(channel);
       client.greet(user);
     } finally {
