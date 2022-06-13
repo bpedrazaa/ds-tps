@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package generalInfoPackage;
 
+option java_package = "com.tp.greeting";
+
 message Empty{}
 
 message RegistryInfo {
