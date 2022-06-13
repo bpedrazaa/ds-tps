@@ -73,7 +73,7 @@ function MessageEvent(mytopic, message) {
   console.log(mytopic + " - " + message.toString())
   if (message.toString() == "dir"){
     
-    this.getFilesInfo();
+    getFilesInfo();
 
   } 
   else{
@@ -83,7 +83,8 @@ function MessageEvent(mytopic, message) {
     var toFind =  myMessages[1];
     console.log("Order:", order, " To Find:", toFind)
     //es find
-    this.searchFileFromMaster(toFind)
+    
+    searchFileFromMaster(toFind);
   }
 }
 
