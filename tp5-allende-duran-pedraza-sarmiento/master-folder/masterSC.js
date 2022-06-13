@@ -95,6 +95,7 @@ function main() {
   server.addService(generalInfoPackage.GeneralService.service, {registerToMaster: registerToMaster});
   
   server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+    console.log("Escuchando el puerto 50051")
     server.start();
   });
 
