@@ -3,7 +3,7 @@ load("@io_grpc_grpc_java//:java_grpc_library.bzl", "java_grpc_library")
 
 proto_library(
     name = "helloworld_proto",
-    srcs = ["../protos/general.proto"],
+    srcs = ["src/main/proto/general.proto"],
 )
 
 java_proto_library(
