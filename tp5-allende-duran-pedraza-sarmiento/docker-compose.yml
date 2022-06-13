@@ -28,19 +28,16 @@ services:
     depends_on:
       - broker
   javasl:
-    image: 127.0.0.1:5000/image-subscriber
-    environment:
-      - port=21212
-      - topic=libros/comedia
-      - brokerip=research.upb.edu
+    image: 127.0.0.1:5000/java-image
     deploy:
-      replicas: 5
+      replicas: 1
       restart_policy:
         condition: on-failure
       placement:
         constraints: [node.role == worker]
     depends_on:
       - broker
+      - master
 
     
         
