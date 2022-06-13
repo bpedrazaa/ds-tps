@@ -29,6 +29,8 @@ services:
       - broker
   javasl:
     image: 127.0.0.1:5000/java-image
+    environment:
+      SERVER: master
     deploy:
       replicas: 2
       restart_policy:
