@@ -28,6 +28,8 @@ var armadoResultado = []
 function registerToMaster(call, callback) {
     
     var newRegistry = {ipAddress: call.request.ipAddress , name: call.request.name}
+    console.log("Se conecto un slave");
+    console.log(newRegistry);
     registroSlaves.push(newRegistry)
     callback(null);
 }
