@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
-  private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
+  private final GeneralServiceGrpc.newBlockingStub blockingStub;
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
