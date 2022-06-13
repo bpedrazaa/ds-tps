@@ -30,7 +30,7 @@ services:
   javasl:
     image: 127.0.0.1:5000/java-image
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
       placement:
