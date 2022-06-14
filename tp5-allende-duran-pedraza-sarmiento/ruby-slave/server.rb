@@ -73,13 +73,13 @@ end
 
 # Act as a client and start the server
 def main
+  masterAddress = ENV["SERVER"]
   # Client Part
-  #stub = GeneralService::Stub.new('localhost:50051', :this_channel_is_insecure)
-  #run_register_to_master(stub)
+  stub = GeneralService::Stub.new("#{masterAddress}:50051", :this_channel_is_insecure)
+  run_register_to_master(stub)
 
   ## Server Part
-  print ENV["SERVER"], "\n"
-  port = '0.0.0.0:50051'
+  port = "#{getIpAddress}:50051"
   s = GRPC::RpcServer.new
   s.add_http2_port(port, :this_port_is_insecure)
   GRPC.logger.info("... running insecurely on #{port}")
