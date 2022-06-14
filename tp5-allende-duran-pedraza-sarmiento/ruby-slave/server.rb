@@ -36,7 +36,7 @@ end
 # ServerImpl of the General Service.
 class ServerImpl < GeneralService::Service
 
-  def get_file_info()
+  def get_file_info(empty, _unused_call)
     files = []
     Dir.each_child(".") {
       |x|
@@ -50,10 +50,11 @@ class ServerImpl < GeneralService::Service
     finalFiles = FileInfoList.new(
       fileInfoList: files
     )
-    print finalFiles, "\n\n\n"
+    #print finalFiles, "\n\n\n"
+    return finalFiles
   end
 
-  def search_file(fileName)
+  def search_file(fileName, _unused_call)
     file = ""
     Dir.each_child(".") {
       |x|
@@ -65,30 +66,24 @@ class ServerImpl < GeneralService::Service
         )
       end
     }
-    print file, "\n\n\n"
-
+    return file
+    #print file, "\n\n\n"
   end
 end
 
 # Act as a client and start the server
 def main
-  # Tests
-  #print getSlaveId
-  #print getIpAddress
-  object = ServerImpl. new
-  object.get_file_info
-  object.search_file(FileName.new(fileName: "Gemfile"))
-
   # Client Part
   #stub = GeneralService::Stub.new('localhost:50051', :this_channel_is_insecure)
   #run_register_to_master(stub)
 
   ## Server Part
-  #port = '0.0.0.0:50051'
-  #s = GRPC::RpcServer.new
-  #s.add_http2_port(port, :this_port_is_insecure)
-  #GRPC.logger.info("... running insecurely on #{port}")
-  #s.handle(ServerImpl)
-  #s.run_till_terminated_or_interrupted([1, 'int', 'SIGQUIT'])
+  print ENV["SERVER"], "\n"
+  port = '0.0.0.0:50051'
+  s = GRPC::RpcServer.new
+  s.add_http2_port(port, :this_port_is_insecure)
+  GRPC.logger.info("... running insecurely on #{port}")
+  s.handle(ServerImpl)
+  s.run_till_terminated_or_interrupted([1, 'int', 'SIGQUIT'])
 end
 main
