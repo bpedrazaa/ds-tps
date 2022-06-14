@@ -14,7 +14,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "generalInfoPackage.FileInfo" do
       optional :fileName, :string, 1
       optional :size, :uint32, 2
-      optional :fileId, :string, 3
+      optional :SlaveId, :string, 3
     end
     add_message "generalInfoPackage.FileName" do
       optional :fileName, :string, 1
