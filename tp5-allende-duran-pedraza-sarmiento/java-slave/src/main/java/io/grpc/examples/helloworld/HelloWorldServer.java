@@ -79,31 +79,21 @@ public class HelloWorldServer {
   }
 
   static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
-
-    @Override
-    public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-      HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
-      responseObserver.onNext(reply);
-      responseObserver.onCompleted();
-    }
-
-    @Override
-    public void sayHelloAgain(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-      HelloReply reply = HelloReply.newBuilder().setMessage("Hello again " + req.getName()).build();
-      responseObserver.onNext(reply);
-      responseObserver.onCompleted();
-    }
-    
+       
     @Override
     public void registerToMaster(RegistryInfo req, StreamObserver<Empty> responseObserver){
       System.out.println("Dentro del reistry en server");
       String ipAddress = req.getIpAddress();
       String name = req.getName();
+      System.out.println("ipAddress: " + ipAddress);
+      System.out.println("name: "+ name);
 
       //Empty response = Empty.newBuilder();
       responseObserver.onNext(Empty.newBuilder().build());
       responseObserver.onCompleted();
     }
     
+    
+
   }
 }

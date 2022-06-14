@@ -25,6 +25,7 @@ import io.grpc.StatusRuntimeException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.net.InetAddress;
 //import io.grpc.examples.helloworld.GeneralServiceGrpc;
 
 /**
@@ -37,40 +38,17 @@ public class HelloWorldClient {
 
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
-    // 'channel' here is a Channel, not a ManagedChannel, so it is not this code's responsibility to
-    // shut it down.
-
-    // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
   /** Say hello to server. */
-  public void greet(String name) {
-    logger.info("Will try to greet ========== " + name + " .......");
-    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-   // HelloReply response;
-    RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
-    logger.info("RegistryInfo: ");
-    //logger.info(mensaje);
-    /*try {
-      response = blockingStub.sayHello(request);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-      return;
-    }
-    logger.info("Greeting: " + response.getMessage());
-    try {
-      response = blockingStub.sayHelloAgain(request);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-      return;
-    }
-    logger.info("Greeting: " + response.getMessage());
-    */
+  public void greet(String ip, String name) {
+    logger.info("Will try to greet ========== " + " .......");
+
+   RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName(name).build();
+    
     try {
       blockingStub.registerToMaster(mensaje);
-      //blockingStub.registerToMaster(request);
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
@@ -78,51 +56,49 @@ public class HelloWorldClient {
     logger.info("Registry enviado al master..");
   }
 
-  /**
-   * Greet server. If provided, the first element of {@code args} is the name to use in the
-   * greeting. The second argument is the target server.
-   */
+  public void service(){
+    blockingStub.getFileInfo(new StreamObserver<>)
+    @Override
+    public void registerToMaster(RegistryInfo req, StreamObserver<Empty> responseObserver){}
+  }
+
   public static void main(String[] args) throws Exception {
     String user = "Tefy-Slave-Java";
     // Access a service running on the local machine on port 50051
     //logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
     //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
-    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    //String target = "localhost:50051";
-    String target = System.getenv("SERVER") + ":50051";
+    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    String target = "localhost:50051";
+    //String target = System.getenv("SERVER") + ":50051";
+    logger.info("hola");
+    System.out.println(InetAddress.getLocalHost());
+    String string = String.valueOf(InetAddress.getLocalHost());
+    String[] parts = string.split("/");
+    String name = parts[0]; 
+    String ipAddress= parts[1];
+    logger.info("name: " + name);
+    logger.info("ipAddress: "+ ipAddress);
     logger.info("El target :" + target);
-    // Allow passing in the user and target strings as command line arguments
-    if (args.length > 0) {
-      if ("--help".equals(args[0])) {
-        System.err.println("Usage: [name [target]]");
-        System.err.println("");
-        System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
-        System.err.println("  target  The server to connect to. Defaults to " + target);
-        System.exit(1);
-      }
-      user = args[0];
-    }
-    if (args.length > 1) {
-      target = args[1];
-    }
-
-    // Create a communication channel to the server, known as a Channel. Channels are thread-safe
-    // and reusable. It is common to create channels at the beginning of your application and reuse
-    // them until the application shuts down.
+    
     ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
-        // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-        // needing certificates.
         .usePlaintext()
         .build();
     try {
       logger.info("El channel es..."+channel);
       HelloWorldClient client = new HelloWorldClient(channel);
-      client.greet(user);
+      System.out.println("Me registro con el servidor");
+      client.greet(ipAddress, name);
+      System.out.println("Espero a que me pida un servicio");
+      client.service();
+
     } finally {
-      // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
-      // resources the channel should be shut down when it will no longer be used. If it may be used
-      // again leave it running.
       channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
   }
+
+  static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
+    
+ }
+
+
 }
