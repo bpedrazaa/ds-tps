@@ -76,7 +76,7 @@ public class HelloWorldClient {
   //To start, run, stop and shutdown the service
   private void start() throws IOException {
     /* The port on which the server should run */
-    int port = 50051;
+    int port = 50052;
     server = ServerBuilder.forPort(port)
         .addService(new GeneralServiceImpl())
         .build()
