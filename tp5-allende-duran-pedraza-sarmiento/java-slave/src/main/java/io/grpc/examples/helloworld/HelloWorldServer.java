@@ -34,10 +34,10 @@ public class HelloWorldServer {
   private void start() throws IOException {
     /* The port on which the server should run */
     int port = 50051;
-    server = ServerBuilder.forPort(port)
+    /*server = ServerBuilder.forPort(port)
         .addService(new GeneralServiceImpl())
         .build()
-        .start();
+        .start();*/
     logger.info("Server started, listening on " + port);
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
@@ -56,7 +56,7 @@ public class HelloWorldServer {
 
   private void stop() throws InterruptedException {
     if (server != null) {
-      server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
+      server.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
   }
 
@@ -79,31 +79,21 @@ public class HelloWorldServer {
   }
 
   static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
-
-    @Override
-    public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-      HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
-      responseObserver.onNext(reply);
-      responseObserver.onCompleted();
-    }
-
-    @Override
-    public void sayHelloAgain(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-      HelloReply reply = HelloReply.newBuilder().setMessage("Hello again " + req.getName()).build();
-      responseObserver.onNext(reply);
-      responseObserver.onCompleted();
-    }
-    
+       
     @Override
     public void registerToMaster(RegistryInfo req, StreamObserver<Empty> responseObserver){
       System.out.println("Dentro del reistry en server");
       String ipAddress = req.getIpAddress();
       String name = req.getName();
+      System.out.println("ipAddress: " + ipAddress);
+      System.out.println("name: "+ name);
 
       //Empty response = Empty.newBuilder();
       responseObserver.onNext(Empty.newBuilder().build());
       responseObserver.onCompleted();
     }
     
+    
+
   }
 }

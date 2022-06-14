@@ -13,7 +13,8 @@ services:
       placement:
         constraints: [node.role == manager]
   master:
-    image: 127.0.0.1:5000/unique-master
+    image: 10.1.2.121:5000/unique-master
+    build: ./node-master
     environment:
       - TOPICPUB=upb/file/result
       - TOPICSUB=upb/file/search
@@ -28,7 +29,8 @@ services:
     depends_on:
       - broker
   javasl:
-    image: 127.0.0.1:5000/java-image
+    image: 10.1.2.121:5000/java-image
+    build: ./java-slave
     environment:
       SERVER: master
     deploy:
@@ -40,6 +42,31 @@ services:
     depends_on:
       - broker
       - master
+  rubysl:
+    image: 10.1.2.121:5000/ruby-image
+    build: ./ruby-slave
+    environment:
+      SERVER: master
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    depends_on:
+      - broker
+      - master
+  registry:
+    image: registry:2
+    ports:
+      - 5000:5000
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:  
+        constraints: [node.role == manager]
+
 
     
         

@@ -22,33 +22,31 @@ package helloworld;
 
 import "google/protobuf/empty.proto";
 
-// The greeting service definition.
-service GeneralService {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-  // Sends another greeting
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
-  // Servicio registry 
-  rpc RegisterToMaster (RegistryInfo) returns (Empty) {}
-}
+message Empty{}
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings
-message HelloReply {
-  string message = 1;
-}
-
-//Para el registry
 message RegistryInfo {
-    string ipAddress = 1;
-    string name = 2;
-  }
-
-message Empty {
-  
+  string ipAddress = 1;
+  string name = 2;
 }
-  
+
+message FileInfo {
+  string fileName = 1;
+  uint32 size = 2 ;
+  string SlaveId = 3;
+}
+
+message FileName {
+  string fileName = 1;
+}
+
+message FileInfoList {
+  repeated FileInfo fileInfoList = 1;
+}
+
+service GeneralService {
+  // from slave to master
+  rpc RegisterToMaster (RegistryInfo) returns (Empty) {}
+  //from master to slave
+  rpc GetFileInfo(Empty) returns (FileInfoList) {}
+  rpc SearchFile (FileName) returns (FileInfo) {}
+}

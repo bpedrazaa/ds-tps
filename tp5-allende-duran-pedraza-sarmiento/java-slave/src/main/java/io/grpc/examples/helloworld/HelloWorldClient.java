@@ -18,6 +18,8 @@ package io.grpc.examples.helloworld;
 
 //import generalInfoPackage.GeneralServiceGrpc;
 
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -25,7 +27,12 @@ import io.grpc.StatusRuntimeException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import io.grpc.examples.helloworld.GeneralServiceGrpc;
+import java.net.InetAddress;
+import java.io.IOException;
+import io.grpc.stub.StreamObserver;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
@@ -34,95 +41,150 @@ public class HelloWorldClient {
   private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
-
+  private Server server;
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
-    // 'channel' here is a Channel, not a ManagedChannel, so it is not this code's responsibility to
-    // shut it down.
-
-    // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
-  /** Say hello to server. */
-  public void greet(String name) {
-    logger.info("Will try to greet ========== " + name + " .......");
-    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    //HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-   // HelloReply response;
-    RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress("10.1.2.7").setName(name).build();
-    logger.info("RegistryInfo: ");
-    //logger.info(mensaje);
-    /*try {
-      response = blockingStub.sayHello(request);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-      return;
-    }
-    logger.info("Greeting: " + response.getMessage());
-    try {
-      response = blockingStub.sayHelloAgain(request);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-      return;
-    }
-    logger.info("Greeting: " + response.getMessage());
-    */
-    try {
+  /** To registry with master */
+  public void registry() {
+    System.out.println("Act as a client and init registry with master");
+    
+    try{  
+      InetAddress ipAddress=InetAddress.getLocalHost();
+
+      String string = String.valueOf(ipAddress);
+      String[] parts = string.split("/");
+      String name = parts[0]; 
+      String ip= parts[1];
+      System.out.println("name: " + name);
+      System.out.println("ipAddress: "+ ip);
+      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName("Java-Slave").build();
       blockingStub.registerToMaster(mensaje);
-      //blockingStub.registerToMaster(request);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+
+    } catch (Exception e)
+    {      
+      logger.log(Level.WARNING, "RPC failed");
+      System.out.println(e);
       return;
+    }  
+    
+    logger.info("Registry end with master..");
+  }
+
+  //To start, run, stop and shutdown the service
+  private void start() throws IOException {
+    /* The port on which the server should run */
+    int port = 50051;
+    server = ServerBuilder.forPort(port)
+        .addService(new GeneralServiceImpl())
+        .build()
+        .start();
+    logger.info("Server started, listening on " + port);
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        // Use stderr here since the logger may have been reset by its JVM shutdown hook.
+        System.err.println("*** shutting down gRPC server since JVM is shutting down");
+        try {
+          HelloWorldClient.this.stop();
+        } catch (InterruptedException e) {
+          e.printStackTrace(System.err);
+        }
+        System.err.println("*** server shut down");
+      }
+    });
+  }
+
+  private void stop() throws InterruptedException {
+    if (server != null) {
+      server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
     }
-    logger.info("Registry enviado al master..");
   }
 
   /**
-   * Greet server. If provided, the first element of {@code args} is the name to use in the
-   * greeting. The second argument is the target server.
+   * Await termination on the main thread since the grpc library uses daemon threads.
    */
+  private void blockUntilShutdown() throws InterruptedException {
+    if (server != null) {
+      server.awaitTermination();
+    }
+  }
   public static void main(String[] args) throws Exception {
-    String user = "Tefy-Slave-Java";
-    // Access a service running on the local machine on port 50051
-    //logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
-    //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
-    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
     //String target = "localhost:50051";
     String target = System.getenv("SERVER") + ":50051";
     logger.info("El target :" + target);
-    // Allow passing in the user and target strings as command line arguments
-    if (args.length > 0) {
-      if ("--help".equals(args[0])) {
-        System.err.println("Usage: [name [target]]");
-        System.err.println("");
-        System.err.println("  name    The name you wish to be greeted by. Defaults to " + user);
-        System.err.println("  target  The server to connect to. Defaults to " + target);
-        System.exit(1);
-      }
-      user = args[0];
-    }
-    if (args.length > 1) {
-      target = args[1];
-    }
-
-    // Create a communication channel to the server, known as a Channel. Channels are thread-safe
-    // and reusable. It is common to create channels at the beginning of your application and reuse
-    // them until the application shuts down.
+    
     ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
-        // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-        // needing certificates.
         .usePlaintext()
         .build();
+    logger.info("El channel es..."+channel);
+    HelloWorldClient client = new HelloWorldClient(channel);
     try {
-      logger.info("El channel es..."+channel);
-      HelloWorldClient client = new HelloWorldClient(channel);
-      client.greet(user);
+      System.out.println("Me registro con el servidor");
+      client.registry();     
     } finally {
-      // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
-      // resources the channel should be shut down when it will no longer be used. If it may be used
-      // again leave it running.
+      System.out.println("finally");
       channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
+
+    System.out.println("Init like a service");
+    client.start();
+    client.blockUntilShutdown();
+
   }
+
+  //Services of the client
+  static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
+       
+    @Override
+    public void searchFile(FileName req, StreamObserver<FileInfo> responseObserver){
+      
+     File root = new File(".");
+     File[] list = root.listFiles();
+
+     String name = "";
+     int size = 0;
+ 
+     if (list != null) {  // In case of access error, list is null
+         for (File f : list) {
+            if (f.getName() == req.toString()){
+              System.out.println("name: "+ f.getName());
+              System.out.println("size: "+ f.length());
+              name = f.getName();
+              size = (int) f.length();
+            }
+         }
+     }
+     FileInfo response = FileInfo.newBuilder().setFileName(name).setSize(size).setSlaveId("Java-Slave").build();
+     responseObserver.onNext(response);
+     responseObserver.onCompleted();
+
+
+    }
+
+    @Override
+    public void getFileInfo(Empty req, StreamObserver<FileInfoList> responseObserver){
+
+     File root = new File(".");
+     File[] list = root.listFiles();
+ 
+     if (list != null) {  // In case of access error, list is null
+         for (File f : list) {
+             System.out.println("name: "+ f.getName());
+             System.out.println("size: "+ f.length());
+             FileInfoList response = FileInfoList.newBuilder().addFileInfoList(FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId("Java-Slave").build()).build();
+             responseObserver.onNext(response);
+         }
+     }else{
+        FileInfoList resp = FileInfoList.newBuilder().build();
+        responseObserver.onNext(resp);
+     }
+      responseObserver.onCompleted();
+    }
+  }
+
+
 }
