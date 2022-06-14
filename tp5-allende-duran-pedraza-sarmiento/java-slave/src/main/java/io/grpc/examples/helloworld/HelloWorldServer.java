@@ -56,7 +56,7 @@ public class HelloWorldServer {
 
   private void stop() throws InterruptedException {
     if (server != null) {
-      server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
+      server.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
   }
 
