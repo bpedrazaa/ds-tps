@@ -6,8 +6,32 @@ $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
 require 'grpc'
 require 'general_services_pb'
+require 'socket'
 include GeneralInfoPackage
 
+def getIpAddress()
+  ip = Socket.ip_address_list.find {
+    |a| a.ipv4_private? && !a.ipv4_loopback?
+  }.ip_address
+  return ip
+end
+
+def getSlaveId()
+  lastLine = IO.readlines("/etc/hosts")[-1..-1][0].split(' ')
+  slaveId = lastLine.last
+  return slaveId
+end
+# Client implementation
+def run_register_to_master(stub)
+  print 'Registering to the server'
+  print'----------'
+
+  registryInfo = RegistryInfo.new(
+    ipAddress: getIpAddress,
+    name: "Ruby-Slave"
+  )
+  stub.register_to_master(registryInfo)
+end
 
 # ServerImpl of the General Service.
 class ServerImpl < GeneralService::Service
@@ -19,28 +43,52 @@ class ServerImpl < GeneralService::Service
       file = FileInfo.new(
         fileName: x,
         size: File.size?(x),
-        fileId: "test"
+        SlaveId: getSlaveId
       )
       files << file
     }
     finalFiles = FileInfoList.new(
       fileInfoList: files
     )
-    print finalFiles
+    print finalFiles, "\n\n\n"
+  end
+
+  def search_file(fileName)
+    file = ""
+    Dir.each_child(".") {
+      |x|
+      if x == fileName.fileName
+        file = FileInfo.new(
+          fileName: x,
+          size: File.size?(x),
+          SlaveId: getSlaveId
+        )
+      end
+    }
+    print file, "\n\n\n"
+
   end
 end
 
-# main starts an RpcServer that receives requests to GreeterServer at the sample
-# server port.
+# Act as a client and start the server
 def main
+  # Tests
+  #print getSlaveId
+  #print getIpAddress
   object = ServerImpl. new
   object.get_file_info
+  object.search_file(FileName.new(fileName: "Gemfile"))
+
+  # Client Part
+  #stub = GeneralService::Stub.new('localhost:50051', :this_channel_is_insecure)
+  #run_register_to_master(stub)
+
+  ## Server Part
+  #port = '0.0.0.0:50051'
   #s = GRPC::RpcServer.new
-  #s.add_http2_port('0.0.0.0:50051', :this_port_is_insecure)
-  #s.handle(GreeterServer)
-  ## Runs the server with SIGHUP, SIGINT and SIGQUIT signal handlers to
-  ##   gracefully shutdown.
-  ## User could also choose to run server via call to run_till_terminated
+  #s.add_http2_port(port, :this_port_is_insecure)
+  #GRPC.logger.info("... running insecurely on #{port}")
+  #s.handle(ServerImpl)
   #s.run_till_terminated_or_interrupted([1, 'int', 'SIGQUIT'])
 end
 main
