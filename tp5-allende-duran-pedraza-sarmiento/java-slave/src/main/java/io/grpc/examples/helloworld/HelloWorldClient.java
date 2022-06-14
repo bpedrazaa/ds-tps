@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.grpc.examples.helloworld;
+package com.tp.greeting;
 
 //import generalInfoPackage.GeneralServiceGrpc;
 
