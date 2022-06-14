@@ -30,7 +30,9 @@ import java.util.logging.Logger;
 import java.net.InetAddress;
 import java.io.IOException;
 import io.grpc.stub.StreamObserver;
-//import io.grpc.examples.helloworld.GeneralServiceGrpc;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
@@ -40,30 +42,41 @@ public class HelloWorldClient {
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
   private Server server;
-
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
   }
 
-  /** Say hello to server. */
-  public void greet(String ip, String name) {
-    logger.info("Will try to greet ========== " + " .......");
-
-   RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName(name).build();
+  /** To registry with master */
+  public void registry() {
+    System.out.println("Act as a client and init registry with master");
     
-    try {
+    try{  
+      InetAddress ipAddress=InetAddress.getLocalHost();
+
+      String string = String.valueOf(ipAddress);
+      String[] parts = string.split("/");
+      String name = parts[0]; 
+      String ip= parts[1];
+      System.out.println("name: " + name);
+      System.out.println("ipAddress: "+ ip);
+      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName("Java-Slave").build();
       blockingStub.registerToMaster(mensaje);
-    } catch (StatusRuntimeException e) {
-      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+
+    } catch (Exception e)
+    {      
+      logger.log(Level.WARNING, "RPC failed");
+      System.out.println(e);
       return;
-    }
-    logger.info("Registry enviado al master..");
+    }  
+    
+    logger.info("Registry end with master..");
   }
 
+  //To start, run, stop and shutdown the service
   private void start() throws IOException {
     /* The port on which the server should run */
-    int port = 50052;
+    int port = 50051;
     server = ServerBuilder.forPort(port)
         .addService(new GeneralServiceImpl())
         .build()
@@ -98,24 +111,10 @@ public class HelloWorldClient {
       server.awaitTermination();
     }
   }
-
-
   public static void main(String[] args) throws Exception {
-    String user = "Tefy-Slave-Java";
-    // Access a service running on the local machine on port 50051
-    //logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
-    //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
     //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    String target = "localhost:50051";
-    //String target = System.getenv("SERVER") + ":50051";
-    logger.info("hola");
-    System.out.println(InetAddress.getLocalHost());
-    String string = String.valueOf(InetAddress.getLocalHost());
-    String[] parts = string.split("/");
-    String name = parts[0]; 
-    String ipAddress= parts[1];
-    logger.info("name: " + name);
-    logger.info("ipAddress: "+ ipAddress);
+    //String target = "localhost:50051";
+    String target = System.getenv("SERVER") + ":50051";
     logger.info("El target :" + target);
     
     ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
@@ -124,43 +123,67 @@ public class HelloWorldClient {
     logger.info("El channel es..."+channel);
     HelloWorldClient client = new HelloWorldClient(channel);
     try {
-    //logger.info("El channel es..."+channel);
-    //HelloWorldClient client = new HelloWorldClient(channel);
       System.out.println("Me registro con el servidor");
-      client.greet(ipAddress, name);
-      //System.out.println("Espero a que me pida un servicio");
-      //client.service();
-      //System.out.println("Encontra al sistem");
-     // channel.shutdownNow();
-     
-
+      client.registry();     
     } finally {
       System.out.println("finally");
       channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
-    System.out.println("Inicio del servicio");
+
+    System.out.println("Init like a service");
     client.start();
     client.blockUntilShutdown();
 
-    
-
-
-
-
   }
 
+  //Services of the client
   static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
        
     @Override
     public void searchFile(FileName req, StreamObserver<FileInfo> responseObserver){
-     FileInfo response = FileInfo.newBuilder().setFileName("hola").setSize(23).setFileId("hola2").build();
       
-      responseObserver.onNext(response);
+     File root = new File(".");
+     File[] list = root.listFiles();
+
+     String name = "";
+     int size = 0;
+ 
+     if (list != null) {  // In case of access error, list is null
+         for (File f : list) {
+            if (f.getName() == req.toString()){
+              System.out.println("name: "+ f.getName());
+              System.out.println("size: "+ f.length());
+              name = f.getName();
+              size = (int) f.length();
+            }
+         }
+     }
+     FileInfo response = FileInfo.newBuilder().setFileName(name).setSize(size).setSlaveId("Java-Slave").build();
+     responseObserver.onNext(response);
+     responseObserver.onCompleted();
+
+
+    }
+
+    @Override
+    public void getFileInfo(Empty req, StreamObserver<FileInfoList> responseObserver){
+
+     File root = new File(".");
+     File[] list = root.listFiles();
+ 
+     if (list != null) {  // In case of access error, list is null
+         for (File f : list) {
+             System.out.println("name: "+ f.getName());
+             System.out.println("size: "+ f.length());
+             FileInfoList response = FileInfoList.newBuilder().addFileInfoList(FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId("Java-Slave").build()).build();
+             responseObserver.onNext(response);
+         }
+     }else{
+        FileInfoList resp = FileInfoList.newBuilder().build();
+        responseObserver.onNext(resp);
+     }
       responseObserver.onCompleted();
     }
-    
-    
-
   }
 
 

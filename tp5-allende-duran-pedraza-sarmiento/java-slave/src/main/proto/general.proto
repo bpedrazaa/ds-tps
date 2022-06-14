@@ -32,7 +32,7 @@ message RegistryInfo {
 message FileInfo {
   string fileName = 1;
   uint32 size = 2 ;
-  string fileId = 3;
+  string SlaveId = 3;
 }
 
 message FileName {

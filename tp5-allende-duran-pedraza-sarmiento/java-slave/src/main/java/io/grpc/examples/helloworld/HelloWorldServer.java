@@ -34,10 +34,10 @@ public class HelloWorldServer {
   private void start() throws IOException {
     /* The port on which the server should run */
     int port = 50051;
-    server = ServerBuilder.forPort(port)
+    /*server = ServerBuilder.forPort(port)
         .addService(new GeneralServiceImpl())
         .build()
-        .start();
+        .start();*/
     logger.info("Server started, listening on " + port);
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
