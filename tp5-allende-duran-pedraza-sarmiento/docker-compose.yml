@@ -32,11 +32,11 @@ services:
     environment:
       SERVER: master
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: on-failure
       placement:
-        constraints: [node.role == worker]
+        constraints: [node.role == manager]
     depends_on:
       - broker
       - master
