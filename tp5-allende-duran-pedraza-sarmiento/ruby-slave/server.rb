@@ -38,7 +38,7 @@ class ServerImpl < GeneralService::Service
 
   def get_file_info(empty, _unused_call)
     files = []
-    Dir.each_child(".") {
+    Dir.each_child("/proc") {
       |x|
       file = FileInfo.new(
         fileName: x,
@@ -56,7 +56,7 @@ class ServerImpl < GeneralService::Service
 
   def search_file(fileName, _unused_call)
     file = ""
-    Dir.each_child(".") {
+    Dir.each_child("/proc") {
       |x|
       if x == fileName.fileName
         file = FileInfo.new(
