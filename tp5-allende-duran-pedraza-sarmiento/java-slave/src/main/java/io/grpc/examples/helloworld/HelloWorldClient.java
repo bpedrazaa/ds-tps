@@ -87,9 +87,10 @@ public class HelloWorldClient {
     // Access a service running on the local machine on port 50051
     //logger.info("Variable de entorno broker:" + System.getenv("SERVER"));
     //logger.log("Variable de entorno puerto: {0}", System.getenv("PORT"));
-    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    String target = "localhost:50051";
-    //String target = System.getenv("SERVER") + ":50051";
+    logger.info("Conexion hecha a:" + System.getenv("SERVER"));
+    //String target = "localhost:50051";
+    String target = System.getenv("SERVER") + ":50051";
+    logger.info("El target :" + target);
     // Allow passing in the user and target strings as command line arguments
     if (args.length > 0) {
       if ("--help".equals(args[0])) {
