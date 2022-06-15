@@ -42,7 +42,6 @@ public class HelloWorldClient {
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
   private Server server;
-  private File encontrado = null;
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
@@ -112,7 +111,7 @@ public class HelloWorldClient {
     }
   }
 
-  public void findFile(String name,File file)
+  /*public void findFile(String name,File file)
   {
         File[] list = file.listFiles();
         if(list!=null)
@@ -134,7 +133,7 @@ public class HelloWorldClient {
                 encontrado = fil;
             }
         }
-    }
+    }*/
 
   public static void main(String[] args) throws Exception {
     //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
@@ -162,24 +161,38 @@ public class HelloWorldClient {
   }
 
   //Services of the client
-  class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
+  static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
        
     @Override
     public void searchFile(FileName req, StreamObserver<FileInfo> responseObserver){
-          
-     HelloWorldClient.this.findFile(req.toString(),new File("/proc"));
+    
+      File encontrado = null;
+      File root = new File("/proc");
+      File[] list = root.listFiles();
 
-     if(encontrado != null){
-      System.out.println("saleee: "+encontrado.getName());
-      FileInfo response = FileInfo.newBuilder().setFileName(encontrado.getName()).setSize((int) encontrado.length()).setSlaveId(System.getenv("HOSTNAME")).build();
-      encontrado = null;
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
-     }else {
-      System.out.println("saleee: "+encontrado);
-      responseObserver.onNext(null);
-      responseObserver.onCompleted();
-     }
+      String name = req.toString();
+      if(list!=null)
+      for (File fil : list)
+      {
+          if (name.equalsIgnoreCase(fil.getName()))
+          {
+              System.out.println("Si existe");
+              encontrado = fil;
+          }
+      }
+
+      if(encontrado != null){
+        System.out.println("saleee: "+encontrado.getName());
+        FileInfo response = FileInfo.newBuilder().setFileName(encontrado.getName()).setSize((int) encontrado.length()).setSlaveId(System.getenv("HOSTNAME")).build();
+        encontrado = null;
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }else {
+        System.out.println("saleee: "+encontrado);
+        responseObserver.onNext(null);
+        responseObserver.onCompleted();
+      }
+
     }
 
     @Override
