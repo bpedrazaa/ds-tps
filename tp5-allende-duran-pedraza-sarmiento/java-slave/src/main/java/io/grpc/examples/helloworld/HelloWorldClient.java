@@ -120,7 +120,13 @@ public class HelloWorldClient {
         {
             if (fil.isDirectory())
             {
+              if (name.equalsIgnoreCase(fil.getName()))
+              {
+                encontrado = fil;
+              }else {
                 findFile(name,fil);
+              }
+              
             }
             else if (name.equalsIgnoreCase(fil.getName()))
             {
