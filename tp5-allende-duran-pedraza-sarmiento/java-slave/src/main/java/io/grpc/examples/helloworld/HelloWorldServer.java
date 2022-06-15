@@ -30,6 +30,7 @@ public class HelloWorldServer {
   private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
 
   private Server server;
+  
 
   private void start() throws IOException {
     /* The port on which the server should run */

@@ -42,6 +42,7 @@ public class HelloWorldClient {
 
   private final GeneralServiceGrpc.GeneralServiceBlockingStub blockingStub;
   private Server server;
+  private File encontrado = null;
   /** Construct client for accessing HelloWorld server using the existing channel. */
   public HelloWorldClient(Channel channel) {
     blockingStub = GeneralServiceGrpc.newBlockingStub(channel);
@@ -50,17 +51,16 @@ public class HelloWorldClient {
   /** To registry with master */
   public void registry() {
     System.out.println("Act as a client and init registry with master");
-    
     try{  
       InetAddress ipAddress=InetAddress.getLocalHost();
-      System.out.println("idContainer: " + System.getenv("HOSTNAME"));
+      //System.out.println("idContainer: " + System.getenv("HOSTNAME"));
       String string = String.valueOf(ipAddress);
       String[] parts = string.split("/");
       String name = parts[0]; 
       String ip= parts[1];
       System.out.println("name: " + name);
       System.out.println("ipAddress: "+ ip);
-      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName("Java-Slave").build();
+      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName(System.getenv("HOSTNAME")).build();
       blockingStub.registerToMaster(mensaje);
 
     } catch (Exception e)
@@ -111,6 +111,25 @@ public class HelloWorldClient {
       server.awaitTermination();
     }
   }
+
+  public void findFile(String name,File file)
+  {
+        File[] list = file.listFiles();
+        if(list!=null)
+        for (File fil : list)
+        {
+            if (fil.isDirectory())
+            {
+                findFile(name,fil);
+            }
+            else if (name.equalsIgnoreCase(fil.getName()))
+            {
+                System.out.println(fil.getParentFile());
+                encontrado = fil;
+            }
+        }
+    }
+
   public static void main(String[] args) throws Exception {
     //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
     //String target = "localhost:50051";
@@ -137,38 +156,30 @@ public class HelloWorldClient {
   }
 
   //Services of the client
-  static class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
+  class GeneralServiceImpl extends GeneralServiceGrpc.GeneralServiceImplBase {
        
     @Override
     public void searchFile(FileName req, StreamObserver<FileInfo> responseObserver){
-      
-     File root = new File(".");
-     File[] list = root.listFiles();
+          
+     HelloWorldClient.this.findFile(req.toString(),new File("/proc"));
 
-     String name = "";
-     int size = 0;
- 
-     if (list != null) {  // In case of access error, list is null
-         for (File f : list) {
-            if (f.getName() == req.toString()){
-              System.out.println("name: "+ f.getName());
-              System.out.println("size: "+ f.length());
-              name = f.getName();
-              size = (int) f.length();
-            }
-         }
+     if(encontrado != null){
+      System.out.println("saleee: "+encontrado.getName());
+      FileInfo response = FileInfo.newBuilder().setFileName(encontrado.getName()).setSize((int) encontrado.length()).setSlaveId(System.getenv("HOSTNAME")).build();
+      encontrado = null;
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+     }else {
+      System.out.println("saleee: "+encontrado);
+      responseObserver.onNext(null);
+      responseObserver.onCompleted();
      }
-     FileInfo response = FileInfo.newBuilder().setFileName(name).setSize(size).setSlaveId("Java-Slave").build();
-     responseObserver.onNext(response);
-     responseObserver.onCompleted();
-
-
     }
 
     @Override
     public void getFileInfo(Empty req, StreamObserver<FileInfoList> responseObserver){
 
-     File root = new File(".");
+     File root = new File("/proc");
      File[] list = root.listFiles();
      List<FileInfo> enviar = new ArrayList<FileInfo>();
  
@@ -176,7 +187,7 @@ public class HelloWorldClient {
          for (File f : list) {
             System.out.println("name: "+ f.getName());
             System.out.println("size: "+ f.length());
-            FileInfo paquete = FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId("Java-Slave").build();
+            FileInfo paquete = FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId(System.getenv("HOSTNAME")).build();
             enviar.add(paquete);
          }
      }else{
@@ -184,7 +195,6 @@ public class HelloWorldClient {
         responseObserver.onNext(resp);
      }
       FileInfoList resp = FileInfoList.newBuilder().addAllFileInfoList(enviar).build();
-      //List<FileInfo> final = FileInfoList.newBuilder().setFoo(enviar).build();
       responseObserver.onNext(resp);
       responseObserver.onCompleted();
     }
