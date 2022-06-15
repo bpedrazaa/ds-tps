@@ -53,7 +53,7 @@ public class HelloWorldClient {
     
     try{  
       InetAddress ipAddress=InetAddress.getLocalHost();
-
+      System.out.println("idContainer: " + System.getenv("HOSTNAME"));
       String string = String.valueOf(ipAddress);
       String[] parts = string.split("/");
       String name = parts[0]; 
@@ -170,18 +170,22 @@ public class HelloWorldClient {
 
      File root = new File(".");
      File[] list = root.listFiles();
+     List<FileInfo> enviar = new ArrayList<FileInfo>();
  
      if (list != null) {  // In case of access error, list is null
          for (File f : list) {
-             System.out.println("name: "+ f.getName());
-             System.out.println("size: "+ f.length());
-             FileInfoList response = FileInfoList.newBuilder().addFileInfoList(FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId("Java-Slave").build()).build();
-             responseObserver.onNext(response);
+            System.out.println("name: "+ f.getName());
+            System.out.println("size: "+ f.length());
+            FileInfo paquete = FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId("Java-Slave").build();
+            enviar.add(paquete);
          }
      }else{
         FileInfoList resp = FileInfoList.newBuilder().build();
         responseObserver.onNext(resp);
      }
+      FileInfoList resp = FileInfoList.newBuilder().addAllFileInfoList(enviar).build();
+      //List<FileInfo> final = FileInfoList.newBuilder().setFoo(enviar).build();
+      responseObserver.onNext(resp);
       responseObserver.onCompleted();
     }
   }
