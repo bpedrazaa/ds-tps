@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.grpc.examples.helloworld;
+package com.tp.greeting;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -30,6 +30,7 @@ public class HelloWorldServer {
   private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
 
   private Server server;
+  
 
   private void start() throws IOException {
     /* The port on which the server should run */

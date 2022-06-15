@@ -85,7 +85,7 @@ java_library(
 java_binary(
     name = "hello-world-client",
     testonly = 1,
-    main_class = "io.grpc.examples.helloworld.HelloWorldClient",
+    main_class = "com.tp.greeting.HelloWorldClient",
     runtime_deps = [
         ":examples",
     ],
@@ -94,7 +94,7 @@ java_binary(
 java_binary(
     name = "hello-world-server",
     testonly = 1,
-    main_class = "io.grpc.examples.helloworld.HelloWorldServer",
+    main_class = "com.tp.greeting.HelloWorldServer",
     runtime_deps = [
         ":examples",
     ],

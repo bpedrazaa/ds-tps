@@ -78,14 +78,14 @@ task routeGuideClient(type: CreateStartScripts) {
 }
 
 task helloWorldServer(type: CreateStartScripts) {
-    mainClass = 'io.grpc.examples.helloworld.HelloWorldServer'
+    mainClass = 'com.tp.greeting.HelloWorldServer'
     applicationName = 'hello-world-server'
     outputDir = new File(project.buildDir, 'tmp/scripts/' + name)
     classpath = startScripts.classpath
 }
 
 task helloWorldClient(type: CreateStartScripts) {
-    mainClass = 'io.grpc.examples.helloworld.HelloWorldClient'
+    mainClass = 'com.tp.greeting.HelloWorldClient'
     applicationName = 'hello-world-client'
     outputDir = new File(project.buildDir, 'tmp/scripts/' + name)
     classpath = startScripts.classpath

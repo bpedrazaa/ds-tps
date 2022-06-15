@@ -38,7 +38,7 @@ class ServerImpl < GeneralService::Service
 
   def get_file_info(empty, _unused_call)
     files = []
-    Dir.each_child(".") {
+    Dir.each_child("/proc") {
       |x|
       file = FileInfo.new(
         fileName: x,
@@ -56,7 +56,7 @@ class ServerImpl < GeneralService::Service
 
   def search_file(fileName, _unused_call)
     file = ""
-    Dir.each_child(".") {
+    Dir.each_child("/proc") {
       |x|
       if x == fileName.fileName
         file = FileInfo.new(
@@ -73,13 +73,13 @@ end
 
 # Act as a client and start the server
 def main
+  masterAddress = ENV["SERVER"]
   # Client Part
-  #stub = GeneralService::Stub.new('localhost:50051', :this_channel_is_insecure)
-  #run_register_to_master(stub)
+  stub = GeneralService::Stub.new("#{masterAddress}:50051", :this_channel_is_insecure)
+  run_register_to_master(stub)
 
   ## Server Part
-  print ENV["SERVER"], "\n"
-  port = '0.0.0.0:50051'
+  port = "#{getIpAddress}:50052"
   s = GRPC::RpcServer.new
   s.add_http2_port(port, :this_port_is_insecure)
   GRPC.logger.info("... running insecurely on #{port}")
