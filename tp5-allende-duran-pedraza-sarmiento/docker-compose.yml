@@ -42,6 +42,7 @@ services:
     depends_on:
       - broker
       - master
+      - registry
   rubysl:
     image: 10.1.2.121:5000/ruby-image
     build: ./ruby-slave
@@ -56,6 +57,7 @@ services:
     depends_on:
       - broker
       - master
+      - registry
   registry:
     image: registry:2
     ports:

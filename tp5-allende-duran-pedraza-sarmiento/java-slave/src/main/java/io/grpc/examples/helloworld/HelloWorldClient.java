@@ -59,7 +59,7 @@ public class HelloWorldClient {
       String ip= parts[1];
       System.out.println("name: " + name);
       System.out.println("ipAddress: "+ ip);
-      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName(System.getenv("HOSTNAME")).build();
+      RegistryInfo mensaje = RegistryInfo.newBuilder().setIpAddress(ip).setName("Java-Slave").build();
       blockingStub.registerToMaster(mensaje);
 
     } catch (Exception e)
@@ -111,36 +111,9 @@ public class HelloWorldClient {
     }
   }
 
-  /*public void findFile(String name,File file)
-  {
-        File[] list = file.listFiles();
-        if(list!=null)
-        for (File fil : list)
-        {
-            if (fil.isDirectory())
-            {
-              if (name.equalsIgnoreCase(fil.getName()))
-              {
-                encontrado = fil;
-              }else {
-                findFile(name,fil);
-              }
-              
-            }
-            else if (name.equalsIgnoreCase(fil.getName()))
-            {
-                System.out.println(fil.getParentFile());
-                encontrado = fil;
-            }
-        }
-    }*/
-
   public static void main(String[] args) throws Exception {
-    //logger.info("Conexion hecha a:" + System.getenv("SERVER"));
-    //String target = "localhost:50051";
     String target = System.getenv("SERVER") + ":50051";
     logger.info("El target :" + target);
-    
     ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
         .usePlaintext()
         .build();
@@ -150,7 +123,6 @@ public class HelloWorldClient {
       System.out.println("Me registro con el servidor");
       client.registry();     
     } finally {
-      System.out.println("finally");
       channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
 
@@ -170,11 +142,12 @@ public class HelloWorldClient {
       File root = new File("/proc");
       File[] list = root.listFiles();
 
-      String name = req.toString();
+      System.out.println("En el metodo find");
+      String name = req.getFileName();
       if(list!=null)
       for (File fil : list)
       {
-          if (name.equalsIgnoreCase(fil.getName()))
+         if (name.equalsIgnoreCase(fil.getName()))
           {
               System.out.println("Si existe");
               encontrado = fil;
@@ -182,13 +155,11 @@ public class HelloWorldClient {
       }
 
       if(encontrado != null){
-        System.out.println("saleee: "+encontrado.getName());
         FileInfo response = FileInfo.newBuilder().setFileName(encontrado.getName()).setSize((int) encontrado.length()).setSlaveId(System.getenv("HOSTNAME")).build();
         encontrado = null;
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }else {
-        System.out.println("saleee: "+encontrado);
         responseObserver.onNext(null);
         responseObserver.onCompleted();
       }
@@ -200,12 +171,11 @@ public class HelloWorldClient {
 
      File root = new File("/proc");
      File[] list = root.listFiles();
+     System.out.println("Method dir");
      List<FileInfo> enviar = new ArrayList<FileInfo>();
  
      if (list != null) {  // In case of access error, list is null
          for (File f : list) {
-            System.out.println("name: "+ f.getName());
-            System.out.println("size: "+ f.length());
             FileInfo paquete = FileInfo.newBuilder().setFileName(f.getName()).setSize((int) f.length()).setSlaveId(System.getenv("HOSTNAME")).build();
             enviar.add(paquete);
          }
