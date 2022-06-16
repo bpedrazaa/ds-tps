@@ -2,12 +2,11 @@ const mqtt = require("mqtt");
 const clientMqtt = mqtt.connect(
   "mqtt://" + process.env.HOST + ":" + process.env.PORT
 );
-const os = require("os");
-const add = require("address");
-// container: os.hostname(),
-// ip: add.ip()
 
-var PROTO_PATH = __dirname + "/protos/general.proto";
+const add = require("address");
+
+
+var PROTO_PATH = __dirname + "../protos/general.proto";
 
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
@@ -51,7 +50,8 @@ function searchFileFromMaster(fileToSearch) {
       if (err) {
         console.log(err);
       } else {
-        console.log(`From server-slaves`, JSON.stringify(response));
+        console.log(`From server-slaves Search file -----`);
+        console.log(JSON.stringify(response));
         armadoResultado.push(response);
       }
     });
@@ -67,8 +67,12 @@ function getFilesInfo(fileName) {
       if (err) {
         console.log(err);
       } else {
-        console.log(`From server-slaves`, JSON.stringify(response));
-        armadoResultado.push(response);
+        console.log(`From server-slaves get files `);
+        console.log( JSON.stringify(response));
+        response.forEach(element => {
+          armadoResultado.push(element);
+        });
+        
       }
     });
   });
@@ -78,7 +82,7 @@ MQTT
 */
 function ConnectEvent() {
   clientMqtt.subscribe(process.env.TOPICSUB);
-  // clientMqtt.publish(process.env.TOPICPUB, jsonFile)
+  
 }
 
 function MessageEvent(mytopic, message) {
@@ -86,15 +90,25 @@ function MessageEvent(mytopic, message) {
   console.log(mytopic + " - " + message.toString());
   if (message.toString() == "dir") {
     getFilesInfo();
+    
+    setTimeout(function() {
+      clientMqtt.publish(process.env.TOPICPUB,"Get Files Result:\n"+ armadoResultado)
+    }, 4000);
+    
   } else {
     var text = message.toString();
     const myMessages = text.split(" ");
     var order = myMessages[0];
     var toFind = myMessages[1];
     console.log("Order:", order, " To Find:", toFind);
+    
     //es find
 
     searchFileFromMaster(toFind);
+    
+    setTimeout(function() {
+      clientMqtt.publish(process.env.TOPICPUB, "Search File Result:\n"+ armadoResultado)
+    }, 4000);
   }
 }
 
@@ -108,7 +122,7 @@ function main() {
     add.ip() + ":50051",
     grpc.ServerCredentials.createInsecure(),
     () => {
-      console.log("Escuchando el puerto 50051", add.ip(), ":50051");
+      console.log("Escuchando la ip y puerto ", add.ip(), ":50051");
       server.start();
     }
   );
