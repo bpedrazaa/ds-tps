@@ -69,7 +69,7 @@ function getFilesInfo(fileName) {
       } else {
         console.log(`From server-slaves get files `);
         console.log( JSON.stringify(response));
-        response.forEach(element => {
+        response.fileInfoList.forEach(element => {
           armadoResultado.push(element);
         });
         
