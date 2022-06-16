@@ -28,43 +28,43 @@ services:
         constraints: [node.role == manager]
     depends_on:
       - broker
-  javasl:
-    image: 10.1.2.121:5000/java-image
-    build: ./java-slave
-    environment:
-      SERVER: master
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == worker]
-    depends_on:
-      - broker
-      - master
-      - registry
-  rubysl:
-    image: 10.1.2.121:5000/ruby-image
-    build: ./ruby-slave
-    environment:
-      SERVER: master
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == worker]
-    depends_on:
-      - broker
-      - master
-      - registry
+  # javasl:
+  #   image: 10.1.2.121:5000/java-image
+  #   build: ./java-slave
+  #   environment:
+  #     SERVER: master
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+  #     placement:
+  #       constraints: [node.role == worker]
+  #   depends_on:
+  #     - broker
+  #     - master
+  #     - registry
+  # rubysl:
+  #   image: 10.1.2.121:5000/ruby-image
+  #   build: ./ruby-slave
+  #   environment:
+  #     SERVER: master
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+  #     placement:
+  #       constraints: [node.role == worker]
+  #   depends_on:
+  #     - broker
+  #     - master
+  #     - registry
   mycsslave:
     ports:
       - 5006:80
       - 50052:443
     image: 10.1.2.121:5000/csharp-image
     build:
-      context: .
+      context: ./MyCSSlave
       dockerfile: Dockerfile
     environment:
       SERVER: master
