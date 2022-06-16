@@ -21,7 +21,7 @@ string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 Console.WriteLine(hostName);
 Console.WriteLine(myIP);
 var input = new RegistryInfo { IpAddress = myIP, Name = "CSharp-Slave" };
-var channel = GrpcChannel.ForAddress("https://" + Environment.GetEnvironmentVariable("SERVER") + ":50051");
+var channel = GrpcChannel.ForAddress(Environment.GetEnvironmentVariable("SERVER") + ":50051");
 var genClient = new GeneralService.GeneralServiceClient(channel);
 var reply = await genClient.RegisterToMasterAsync(input);
 app.Run();
