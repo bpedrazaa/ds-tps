@@ -67,7 +67,7 @@ function getFilesInfo(fileName) {
       if (err) {
         console.log(err);
       } else {
-        console.log(`From server-slaves get files `);
+        console.log(`From server-slaves get files ---- `);
         console.log( JSON.stringify(response));
         response.fileInfoList.forEach(element => {
           armadoResultado.push(element);
@@ -92,7 +92,7 @@ function MessageEvent(mytopic, message) {
     getFilesInfo();
     
     setTimeout(function() {
-      clientMqtt.publish(process.env.TOPICPUB,"Get Files Result:\n"+ armadoResultado)
+      clientMqtt.publish(process.env.TOPICPUB,"Get Files Result:\n"+ JSON.stringify(armadoResultado))
     }, 4000);
     
   } else {
@@ -107,7 +107,7 @@ function MessageEvent(mytopic, message) {
     searchFileFromMaster(toFind);
     
     setTimeout(function() {
-      clientMqtt.publish(process.env.TOPICPUB, "Search File Result:\n"+ armadoResultado)
+      clientMqtt.publish(process.env.TOPICPUB, "Search File Result:\n"+ JSON.stringify(armadoResultado))
     }, 4000);
   }
 }
