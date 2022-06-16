@@ -26,8 +26,11 @@ var input = new RegistryInfo { IpAddress = myIP, Name = "CSharp-Slave" };
 
 string masterIP = Dns.GetHostByName(Environment.GetEnvironmentVariable("SERVER")).AddressList[0].ToString();
 string addr = "https://" +masterIP+ ":50051";
+var httpHandler = new HttpClientHandler();
+httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+// var channel = GrpcChannel.ForAddress(ServerAddress, new GrpcChannelOptions { HttpHandler = httpHandler });
 Console.WriteLine("LINK CHANNEL: "+addr);
-var channel = GrpcChannel.ForAddress(addr);
+var channel = GrpcChannel.ForAddress(addr, new GrpcChannelOptions { HttpHandler = httpHandler });
 var genClient = new GeneralService.GeneralServiceClient(channel);
 var reply = await genClient.RegisterToMasterAsync(input);
 app.Run();
