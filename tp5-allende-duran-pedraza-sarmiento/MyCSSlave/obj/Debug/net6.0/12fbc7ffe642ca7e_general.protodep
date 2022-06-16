@@ -1,0 +1,2 @@
+obj\Debug\net6.0\Protos/General.cs \
+obj\Debug\net6.0\Protos/GeneralGrpc.cs: Protos/general.proto

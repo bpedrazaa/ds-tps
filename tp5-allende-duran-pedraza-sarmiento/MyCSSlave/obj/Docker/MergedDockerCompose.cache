@@ -1,0 +1,19 @@
+services:
+  mycsslave:
+    build:
+      context: C:\Users\Equipo\Documents\UPB\Semestre 7\Sistemas Distribuidos\MyCSSlave
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      SERVER: master
+    image: mycsslave
+    ports:
+    - published: 5006
+      target: 80
+    - published: 50052
+      target: 443
+    volumes:
+    - C:\Users\Equipo\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\Equipo\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+version: '3.4'

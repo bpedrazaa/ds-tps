@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option csharp_namespace = "MyCSSlave.Services";
+
+message Empty{}
+
+message RegistryInfo {
+  string ipAddress = 1;
+  string name = 2;
+}
+
+message FileInfo {
+  string fileName = 1;
+  uint32 size = 2 ;
+  string SlaveId = 3;
+}
+
+message FileName {
+  string fileName = 1;
+}
+
+message FileInfoList {
+  repeated FileInfo fileInfoList = 1;
+}
+
+service GeneralService {
+  // from slave to master
+  rpc RegisterToMaster (RegistryInfo) returns (Empty) {}
+  //from master to slave
+  rpc GetFileInfo(Empty) returns (FileInfoList) {}
+  rpc SearchFile (FileName) returns (FileInfo) {}
+}
