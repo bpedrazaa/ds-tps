@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\MyCSSlave\\MyCSSlave.csproj": {}
+    "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\ds-tps\\tp5-allende-duran-pedraza-sarmiento\\MyCSSlave\\MyCSSlave.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\MyCSSlave\\MyCSSlave.csproj": {
+    "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\ds-tps\\tp5-allende-duran-pedraza-sarmiento\\MyCSSlave\\MyCSSlave.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\MyCSSlave\\MyCSSlave.csproj",
+        "projectUniqueName": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\ds-tps\\tp5-allende-duran-pedraza-sarmiento\\MyCSSlave\\MyCSSlave.csproj",
         "projectName": "MyCSSlave",
-        "projectPath": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\MyCSSlave\\MyCSSlave.csproj",
+        "projectPath": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\ds-tps\\tp5-allende-duran-pedraza-sarmiento\\MyCSSlave\\MyCSSlave.csproj",
         "packagesPath": "C:\\Users\\Equipo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\MyCSSlave\\obj\\",
+        "outputPath": "C:\\Users\\Equipo\\Documents\\UPB\\Semestre 7\\Sistemas Distribuidos\\ds-tps\\tp5-allende-duran-pedraza-sarmiento\\MyCSSlave\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Equipo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,9 +40,23 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Google.Protobuf": {
+              "target": "Package",
+              "version": "[3.21.1, )"
+            },
             "Grpc.AspNetCore": {
               "target": "Package",
               "version": "[2.40.0, )"
+            },
+            "Grpc.Net.Client": {
+              "target": "Package",
+              "version": "[2.46.0, )"
+            },
+            "Grpc.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.46.3, )"
             },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
