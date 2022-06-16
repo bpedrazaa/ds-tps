@@ -20,11 +20,14 @@ string hostName = Dns.GetHostName();
 string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 Console.WriteLine(hostName);
 Console.WriteLine(myIP);
+Console.WriteLine("ENV VAR: "+Environment.GetEnvironmentVariable("SERVER"));
 
 var input = new RegistryInfo { IpAddress = myIP, Name = "CSharp-Slave" };
 
 string masterIP = Dns.GetHostByName(Environment.GetEnvironmentVariable("SERVER")).AddressList[0].ToString();
-var channel = GrpcChannel.ForAddress("https://" +masterIP+ ":50051");
+string addr = "https://" +masterIP+ ":50051";
+Console.WriteLine("LINK CHANNEL: "+addr);
+var channel = GrpcChannel.ForAddress(addr);
 var genClient = new GeneralService.GeneralServiceClient(channel);
 var reply = await genClient.RegisterToMasterAsync(input);
 app.Run();
