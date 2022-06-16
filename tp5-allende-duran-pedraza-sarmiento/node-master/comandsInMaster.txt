@@ -2,5 +2,6 @@
 apt update
 apt install -y protobuf-compiler
 
-
+npm install mqtt
+npm install address 
 npm install @grpc/grpc-js @grpc/proto-loader

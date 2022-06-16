@@ -5,7 +5,6 @@ const clientMqtt = mqtt.connect(
 
 const add = require("address");
 
-
 var PROTO_PATH = __dirname + "../protos/general.proto";
 
 var grpc = require("@grpc/grpc-js");
@@ -101,11 +100,8 @@ function MessageEvent(mytopic, message) {
     var order = myMessages[0];
     var toFind = myMessages[1];
     console.log("Order:", order, " To Find:", toFind);
-    
     //es find
-
     searchFileFromMaster(toFind);
-    
     setTimeout(function() {
       clientMqtt.publish(process.env.TOPICPUB, "Search File Result:\n"+ JSON.stringify(armadoResultado))
     }, 4000);
