@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   mycsslave:
-    image: mycsslave:dev
+    image: 10.1.2.121:dev
     container_name: MyCSSlave
     build:
       target: base
@@ -14,8 +14,8 @@ services:
       - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
       - NUGET_FALLBACK_PACKAGES=
     volumes:
-      - C:\Users\Equipo\Documents\UPB\Semestre 7\Sistemas Distribuidos\MyCSSlave:/app
-      - C:\Users\Equipo\Documents\UPB\Semestre 7\Sistemas Distribuidos\MyCSSlave:/src
+      - C:\Users\Equipo\Documents\UPB\Semestre 7\Sistemas Distribuidos\ds-tps\tp5-allende-duran-pedraza-sarmiento\MyCSSlave:/app
+      - C:\Users\Equipo\Documents\UPB\Semestre 7\Sistemas Distribuidos\ds-tps\tp5-allende-duran-pedraza-sarmiento\MyCSSlave:/src
       - C:\Users\Equipo\vsdbg\vs2017u5:/remote_debugger:rw
       - C:\Users\Equipo\.nuget\packages\:/root/.nuget/packages:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
