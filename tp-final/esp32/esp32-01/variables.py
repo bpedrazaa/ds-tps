@@ -1,4 +1,4 @@
-varSsid = 'CONECTATE SALA'
-varPassword = 'FLIADURAN'
+varSsid = 'INFO'
+varPassword = 'teleinfo2019'
 varKeepAliveValue = 60
-varPortNumber = 21192
+varPortNumber = 21152
