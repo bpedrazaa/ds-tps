@@ -19,7 +19,8 @@ const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
 
-const topicSub = "verify";
+const topicSubVerify = "verify";
+const topicSubRegister = "register";
 const topicPub = "results";
 const connectUrl = 'mqtt://research.upb.edu:21192'
 const client = mqtt.connect(connectUrl)
@@ -80,8 +81,11 @@ function prettyJSONString(inputString) {
 async function main() {
   try {
     client.on('connect', () => {
-      client.subscribe(topicSub, () => {
-        console.log("Suscribed to topic: ", topicSub);
+      client.subscribe(topicSubVerify, () => {
+        console.log("Suscribed to topic: ", topicSubVerify);
+      })
+      client.subscribe(topicSubRegister, () => {
+        console.log("Suscribed to topic: ", topicSubRegister);
       })
     })
 		// build an in memory object with the network configuration (also known as a connection profile)
@@ -144,19 +148,36 @@ async function main() {
       //}
 
       // MQTT Suscription implementation
-      client.on('message',async (topicSub, payload) => {
-        console.log(`Received: ${payload.toString()}, from topic: ${topicSub.toString()}`)
 
-        console.log('\n--> evaluate transaction: readasset, function returns an asset with a given assetid');
-        result = await contract.submitTransaction('ReadAsset', payload.toString());
-        console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+      client.on('message',async (topic, payload) => {
+        if (topic.toString() === 'register') {
+          console.log(`Received: ${payload.toString()}, from topic: ${topic.toString()}`)
+          payload = JSON.parse(payload)
+          const id = payload.ID.toString()
+          const owner = payload.owner.toString()
 
-
-        client.publish(topicPub, result, (error) => {
-          if(error){
-            console.error(error)
+          console.log('\n--> Submit Transaction: CreateAsset, creates new asset with ID and owner arguments');
+          result = await contract.submitTransaction('CreateAsset', id, owner);
+          console.log('*** Result: committed');
+          if (`${result}` !== '') {
+            console.log(`*** Result: ${prettyJSONString(result.toString())}`);
           }
-        })
+        }
+        else if (topic.toString() === 'verify') {
+          console.log("#####\t\tVERIFYING\t\t#####");
+          console.log(`Received: ${payload.toString()}, from topic: ${topic.toString()}`)
+          payload = JSON.parse(payload)
+
+          console.log('\n--> evaluate transaction: readasset, function returns an asset with a given assetid');
+          result = await contract.submitTransaction('ReadAsset', payload.ID.toString());
+          console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+          client.publish(topicPub, result, (error) => {
+            if(error){
+              console.error(error)
+            }
+          })
+        }
       })
 
 

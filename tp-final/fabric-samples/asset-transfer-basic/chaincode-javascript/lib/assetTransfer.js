@@ -16,7 +16,7 @@ class AssetTransfer extends Contract {
     async InitLedger(ctx) {
         const assets = [
             {
-                ID: 'esp32-01',
+                ID: '240ac4a6e3d4',
                 Owner: 'Stephany Duran',
             },
             {
