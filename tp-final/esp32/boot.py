@@ -1,6 +1,6 @@
 import time
 from umqttsimple import MQTTClient
-from variables import varSsid, varPassword, varKeepAliveValue, varPortNumber
+from variables import varSsid, varPassword, varKeepAliveValue, varPortNumber, varowner
 import ubinascii
 import machine
 import micropython
@@ -18,10 +18,8 @@ keepaliveValue = varKeepAliveValue
 client_id = ubinascii.hexlify(machine.unique_id())
 topic_sub = b'results'
 topic_pub = b'verify'
-
-last_message = 0
-message_interval = 5
-counter = 0
+topic_pub_r = b'register'
+owner = varowner
 
 station = network.WLAN(network.STA_IF)
 

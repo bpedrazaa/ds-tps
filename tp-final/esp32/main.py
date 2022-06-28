@@ -1,9 +1,10 @@
+#from msilib.schema import Registry
 from machine import Pin, SoftI2C
 import ssd1306
 from time import sleep
 import json
 
-global client_id, mqtt_server, topic_sub, portNumber, keepaliveValue
+global client_id, mqtt_server, topic_sub, portNumber, keepaliveValue, topic_pub_r, owner
 
 # Set up OLED
 i2c = SoftI2C(scl=Pin(15), sda=Pin(4))
@@ -53,15 +54,19 @@ try:
 except OSError as e:
   restart_and_reconnect()
 
+#Registry
+print("Se registra...")
+msg_r = {"ID": "cliente","owner": owner}
+msgr = json.dumps(msg_r)
+client.publish(topic_pub_r,msgr)
+
 while True:
   try:
     client.check_msg()
-    if (time.time() - last_message) > message_interval:
-      print('Tiempo de publicar...')
-      newMsg = {"ID": client_id}
-      msg = json.dumps(newMsg)
-      client.publish(topic_pub,msg)
-      last_message = time.time()
-      counter += 1
+    time.sleep(5)
+    print('Tiempo de publicar...')
+    newMsg = {"ID": client_id}
+    msg = json.dumps(newMsg)
+    client.publish(topic_pub,msg)
   except OSError as e:
     restart_and_reconnect()
