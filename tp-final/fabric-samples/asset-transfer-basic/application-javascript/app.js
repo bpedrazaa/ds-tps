@@ -151,6 +151,7 @@ async function main() {
 
       client.on('message',async (topic, payload) => {
         if (topic.toString() === 'register') {
+          console.log("\n\n#####\t\tREGISTERING\t\t#####");
           console.log(`Received: ${payload.toString()}, from topic: ${topic.toString()}`)
           payload = JSON.parse(payload)
           const id = payload.ID.toString()
@@ -162,9 +163,10 @@ async function main() {
           if (`${result}` !== '') {
             console.log(`*** Result: ${prettyJSONString(result.toString())}`);
           }
+          console.log("############################################");
         }
         else if (topic.toString() === 'verify') {
-          console.log("#####\t\tVERIFYING\t\t#####");
+          console.log("\n\n#####\t\tVERIFYING\t\t#####");
           console.log(`Received: ${payload.toString()}, from topic: ${topic.toString()}`)
           payload = JSON.parse(payload)
 
@@ -177,6 +179,7 @@ async function main() {
               console.error(error)
             }
           })
+          console.log("############################################");
         }
       })
 

@@ -14,19 +14,10 @@ const { Contract } = require('fabric-contract-api');
 class AssetTransfer extends Contract {
 
     async InitLedger(ctx) {
-        const assets = [
-            {
-                ID: '240ac4a6e3d4',
-                Owner: 'Stephany Duran',
-            },
-            {
-                ID: 'esp32-02',
-                Owner: 'Boris Pedraza',
-            }
-        ];
+        const assets = [];
 
         for (const asset of assets) {
-            asset.docType = 'asset';
+            //asset.docType = 'asset';
             // example of how to write to world state deterministically
             // use convetion of alphabetic order
             // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
