@@ -28,12 +28,6 @@ function prettyJSONString(inputString) {
   return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
-function connectToBroker(){
-  console.log("Connecting");
-  client.subscribe(topicSub, () => {
-    console.log("Suscribed to topic: ", topicSub);
-  })
-}
 
 
 // pre-requisites:
@@ -85,7 +79,11 @@ function connectToBroker(){
  */
 async function main() {
   try {
-    client.on('connect', connectToBroker)
+    client.on('connect', () => {
+      client.subscribe(topicSub, () => {
+        console.log("Suscribed to topic: ", topicSub);
+      })
+    })
 		// build an in memory object with the network configuration (also known as a connection profile)
     const ccp = buildCCPOrg1();
 
@@ -107,7 +105,6 @@ async function main() {
     // In a real application this would be done as the backend server session is setup for
     // a user that has been verified.
     const gateway = new Gateway();
-    var contract = null;
     try {
 			// setup the gateway instance
 			// The user will now be able to create connections to the fabric network and be able to
@@ -123,7 +120,7 @@ async function main() {
       const network = await gateway.getNetwork(channelName);
 
       // Get the contract from the network.
-      contract = network.getContract(chaincodeName);
+      const contract = network.getContract(chaincodeName);
 
       // Initialize a set of asset data on the channel using the chaincode 'InitLedger' function.
       // This type of transaction would only be run once by an application the first time it was started after it
@@ -139,6 +136,13 @@ async function main() {
       let result = await contract.evaluateTransaction('GetAllAssets');
       console.log(`*** Result: ${prettyJSONString(result.toString())}`);
 
+      //console.log('\n--> Submit Transaction: CreateAsset, creates new asset with ID and owner arguments');
+      //result = await contract.submitTransaction('CreateAsset', 'esp32-03', 'Jhon Smith');
+      //console.log('*** Result: committed');
+      //if (`${result}` !== '') {
+        //console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+      //}
+
       // MQTT Suscription implementation
       client.on('message',async (topicSub, payload) => {
         console.log(`Received: ${payload.toString()}, from topic: ${topicSub.toString()}`)
@@ -146,18 +150,20 @@ async function main() {
         console.log('\n--> evaluate transaction: readasset, function returns an asset with a given assetid');
         result = await contract.submitTransaction('ReadAsset', payload.toString());
         console.log(`*** Result: ${prettyJSONString(result.toString())}`);
+
+
+        client.publish(topicPub, result, (error) => {
+          if(error){
+            console.error(error)
+          }
+        })
       })
+
 
       // Now let's try to submit a transaction.
       // This will be sent to both peers and if both peers endorse the transaction, the endorsed proposal will be sent
       // to the orderer to be committed by each of the peer's to the channel ledger.
 
-      //console.log('\n--> Submit Transaction: CreateAsset, creates new asset with ID and owner arguments');
-      //result = await contract.submitTransaction('CreateAsset', 'esp32-03', 'Jhon Smith');
-      //console.log('*** Result: committed');
-      //if (`${result}` !== '') {
-        //console.log(`*** Result: ${prettyJSONString(result.toString())}`);
-      //}
 
       //console.log('\n--> Evaluate Transaction: ReadAsset, function returns an asset with a given assetID');
       //result = await contract.evaluateTransaction('ReadAsset', 'esp32-01');
