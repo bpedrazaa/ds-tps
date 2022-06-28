@@ -56,7 +56,7 @@ except OSError as e:
 
 #Registry
 print("Se registra...")
-msg_r = {"ID": "cliente","owner": owner}
+msg_r = {"ID": client_id,"owner": owner}
 msgr = json.dumps(msg_r)
 client.publish(topic_pub_r,msgr)
 
