@@ -28,11 +28,13 @@ def sub_cb(topic, msg):
   ownerString = newMsg[1].split(':')
 
   # Show message in OLED
-  oled.text(idString[0].replace(" ", "")+ ':', 0, 0)
-  oled.text(idString[1].replace(" ", "") + ',', 0, 10)
-  oled.text(ownerString[0].replace(" ", "") + ':', 0, 20)
-  oled.text(ownerString[1].replace(" ", ""), 0, 30)
-  oled.show();
+  if(idString[1].replace('"','') == client_id.decode()):
+    oled.text(idString[0].replace(" ", "")+ ':', 0, 0)
+    oled.text(idString[1].replace(" ", "") + ',', 0, 10)
+    oled.text(ownerString[0].replace(" ", "") + ':', 0, 20)
+    oled.text(ownerString[1].replace(" ", ""), 0, 30)
+    oled.show();
+  
 
 
 def connect_and_subscribe():
